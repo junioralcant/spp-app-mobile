@@ -8,15 +8,27 @@ import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 import {
+  BoxCardContent,
+  BoxDataContent,
+  BoxDescriptionContent,
   BoxInpuDate,
   BoxInput,
   BoxInputsDate,
+  BoxList,
   ButtonClose,
+  ButtonHeaderDelete,
+  ButtonHeaderEdite,
   ButtonSearch,
+  Card,
   Container,
+  HeaderCard,
+  ImageContent,
   Input,
   InputDate,
   TextButtonSearch,
+  TextDataContent,
+  TextDataContentFoco,
+  TextDescriptionContent,
 } from './styles';
 import api from '../../services/api';
 
@@ -27,6 +39,7 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  descricao: string;
   total: number;
 }
 
@@ -49,22 +62,6 @@ export default function AdiantamentoList() {
       const response = await api.get(
         `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
       );
-      console.log(response.data.length);
-      // let teste = response.data.filter(item => {
-      //   let total = 0;
-      //   // console.log(item.total);
-
-      //   if (item.total !== null) {
-      //     total = total + item.total;
-      //   }
-
-      //   console.log(total);
-
-      //   return total;
-      // });
-
-      // console.log(teste);
-
       setAdiantamentos(response.data);
     }
 
@@ -96,7 +93,6 @@ export default function AdiantamentoList() {
     setSearch(false);
   }
 
-  // console.log(adiantamentos);
   let total = 0;
 
   adiantamentos.filter(item => {
@@ -104,8 +100,6 @@ export default function AdiantamentoList() {
       total += item.total;
     }
   });
-
-  console.log(total);
 
   return (
     <SafeAreaView>
@@ -166,6 +160,51 @@ export default function AdiantamentoList() {
               </ButtonClose>
             )}
           </BoxInputsDate>
+
+          <BoxList>
+            {adiantamentos.map(adiantamento => (
+              <Card key={adiantamento._id}>
+                <HeaderCard>
+                  <ButtonHeaderDelete>
+                    <Icons name="delete" size={30} color="#FFF" />
+                  </ButtonHeaderDelete>
+                  <ButtonHeaderEdite>
+                    <Icons name="edit" size={30} color="#FFF" />
+                  </ButtonHeaderEdite>
+                </HeaderCard>
+
+                <BoxCardContent>
+                  <BoxDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Linha:</TextDataContentFoco>{' '}
+                      {adiantamento.nomeLinha}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
+                      {adiantamento.nomeColaborador}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
+                      {adiantamento.total}
+                    </TextDataContent>
+                  </BoxDataContent>
+
+                  <ImageContent
+                    source={{
+                      uri: adiantamento.imagem.url,
+                    }}
+                  />
+                </BoxCardContent>
+
+                <BoxDescriptionContent>
+                  <TextDataContent>Descrição</TextDataContent>
+                  <TextDescriptionContent>
+                    {adiantamento.descricao}
+                  </TextDescriptionContent>
+                </BoxDescriptionContent>
+              </Card>
+            ))}
+          </BoxList>
         </Container>
       </ScrollView>
     </SafeAreaView>
