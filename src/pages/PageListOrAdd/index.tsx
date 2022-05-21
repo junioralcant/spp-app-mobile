@@ -4,6 +4,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {Container, Button, TextButton} from './styles';
 import {SafeAreaView} from 'react-native';
 import HeaderName from '../../components/HeaderName';
+import {RouteProp} from '@react-navigation/native';
 
 type RootStackParamList = {
   Profile: {page: string};
@@ -11,7 +12,10 @@ type RootStackParamList = {
 
 interface iNavigationProps {
   navigation: StackNavigationProp<any, any>;
-  route: StackNavigationProp<any, any>;
+  route: RouteProp<
+    {params: {params: {page: string; pageName: string}}},
+    'params'
+  >;
 }
 
 interface IItemType {

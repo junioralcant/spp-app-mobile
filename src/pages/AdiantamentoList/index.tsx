@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, SafeAreaView} from 'react-native';
+import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
 
 import Icons from 'react-native-vector-icons/AntDesign';
+
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
@@ -16,6 +18,7 @@ import {
   BoxInputsDate,
   BoxList,
   ButtonClose,
+  ButtonCloseModal,
   ButtonHeaderDelete,
   ButtonHeaderEdite,
   ButtonSearch,
@@ -31,6 +34,8 @@ import {
   TextDescriptionContent,
 } from './styles';
 import api from '../../services/api';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface IAdiantamentoType {
   _id: string;
@@ -43,7 +48,15 @@ interface IAdiantamentoType {
   total: number;
 }
 
-export default function AdiantamentoList() {
+interface iNavigationProps {
+  navigation: StackNavigationProp<any, any>;
+  route: StackNavigationProp<any, any>;
+}
+
+export default function AdiantamentoList({
+  navigation,
+  route,
+}: iNavigationProps) {
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
 
@@ -57,6 +70,15 @@ export default function AdiantamentoList() {
 
   const [adiantamentos, setAdiantamentos] = useState<IAdiantamentoType[]>([]);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageShow, setImageShow] = useState('');
+
+  const images = [
+    {
+      url: imageShow,
+    },
+  ];
+
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
@@ -66,7 +88,7 @@ export default function AdiantamentoList() {
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -101,14 +123,58 @@ export default function AdiantamentoList() {
     }
   });
 
+  function deleteGegister(id: string) {
+    Alert.alert('Deletar', 'Deseja realmente deletar esse registro?', [
+      {
+        text: 'Cancelar',
+        onPress: () => {
+          return;
+        },
+      },
+      {
+        text: 'Sim',
+        onPress: async () => {
+          try {
+            await api.delete(`/adiantamento/${id}`);
+            const response = await api.get('/adiantamento');
+            setAdiantamentos(response.data);
+            Alert.alert('Registro deletado com sucesso!');
+          } catch (error) {
+            console.log(error);
+            Alert.alert('Problema ao deletar registro');
+          }
+        },
+      },
+    ]);
+  }
+
+  function editRegister(id: string) {
+    navigation.navigate('Adiantamento', {
+      params: {registerId: id},
+    });
+  }
+
+  function showModal(uri: string) {
+    setImageShow(uri);
+    setModalVisible(true);
+  }
+
   return (
-    <SafeAreaView>
+    <>
+      <Modal visible={modalVisible} transparent={true}>
+        <ButtonCloseModal onPress={() => setModalVisible(false)}>
+          <Icons name="closecircleo" size={38} color="#FFF" />
+        </ButtonCloseModal>
+        <ImageViewer imageUrls={images} />
+      </Modal>
       <HeaderList
         namePage="Listagem Adiantamento"
         total={total}
         register={adiantamentos.length}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}>
         <Container>
           <BoxInput>
             <Input
@@ -165,10 +231,12 @@ export default function AdiantamentoList() {
             {adiantamentos.map(adiantamento => (
               <Card key={adiantamento._id}>
                 <HeaderCard>
-                  <ButtonHeaderDelete>
+                  <ButtonHeaderDelete
+                    onPress={() => deleteGegister(adiantamento._id)}>
                     <Icons name="delete" size={30} color="#FFF" />
                   </ButtonHeaderDelete>
-                  <ButtonHeaderEdite>
+                  <ButtonHeaderEdite
+                    onPress={() => editRegister(adiantamento._id)}>
                     <Icons name="edit" size={30} color="#FFF" />
                   </ButtonHeaderEdite>
                 </HeaderCard>
@@ -185,15 +253,22 @@ export default function AdiantamentoList() {
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
-                      {adiantamento.total}
+                      {adiantamento.total &&
+                        adiantamento.total.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
                     </TextDataContent>
                   </BoxDataContent>
 
-                  <ImageContent
-                    source={{
-                      uri: adiantamento.imagem.url,
-                    }}
-                  />
+                  <TouchableOpacity
+                    onPress={() => showModal(adiantamento.imagem.url)}>
+                    <ImageContent
+                      source={{
+                        uri: adiantamento.imagem.url,
+                      }}
+                    />
+                  </TouchableOpacity>
                 </BoxCardContent>
 
                 <BoxDescriptionContent>
@@ -207,6 +282,6 @@ export default function AdiantamentoList() {
           </BoxList>
         </Container>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }

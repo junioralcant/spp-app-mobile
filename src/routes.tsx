@@ -4,8 +4,11 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import SignIn from './pages/SignIn';
 import Home from './pages/Home';
+
 import Adiantamento from './pages/Adiantamento';
 import AdiantamentoList from './pages/AdiantamentoList';
+
+import Alimentacao from './pages/Alimentacao';
 
 import PageListOrAdd from './pages/PageListOrAdd';
 
@@ -43,33 +46,16 @@ export default function Routes() {
         <Stack.Screen
           name="AdiantamentoList"
           component={AdiantamentoList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Alimentacao"
+          component={Alimentacao}
           options={{headerShown: false}}
         />
-
-        {/*
-        <Stack.Screen
-          name="DangerRegister"
-          component={DangerRegister}
-          options={{headerTransparent: true, headerTitle: false}}
-        />
-
-        <Stack.Screen
-          name="DangerList"
-          component={DangerList}
-          options={{headerTransparent: true, headerTitle: false}}
-        />
-
-        <Stack.Screen
-          name="About"
-          component={About}
-          options={{headerTransparent: true, headerTitle: false}}
-        />
-
-        <Stack.Screen
-          name="Draws"
-          component={Draws}
-          options={{headerTransparent: true, headerTitle: false}}
-        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

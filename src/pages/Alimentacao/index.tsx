@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ActivityIndicator, Alert, ScrollView} from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
@@ -19,30 +19,21 @@ import {
   Preview,
   TextButton,
 } from './styles';
+
 import {ImagePickerResponse} from 'react-native-image-picker/src';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderName from '../../components/HeaderName';
 import inputValueMask from '../../components/inputValueMask';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RouteProp} from '@react-navigation/native';
 
-interface INavigationProps {
-  navigation: StackNavigationProp<any, any>;
-  route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
-}
-
-export default function Adiantamento({navigation, route}: INavigationProps) {
-  const [nome, setNome] = useState('');
+export default function Alimentacao() {
+  const [quantidade, setQuantidade] = useState('');
   const [nomeLinha, setNomeLinha] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [uri, setUri] = useState('');
-
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const [registerId, setRegisterId] = useState('');
 
   const [pickerResponse, setPickerResponse] =
     useState<ImagePickerResponse | null>();
@@ -59,7 +50,6 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         console.log(response);
 
         setPickerResponse(response);
-        setUri('');
       },
     );
   }
@@ -75,7 +65,6 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         console.log(response);
 
         setPickerResponse(response);
-        setUri('');
       },
     );
   }
@@ -86,7 +75,6 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
     } else {
       try {
         setError('');
-
         setLoading(true);
         const data = new FormData();
 
@@ -98,7 +86,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
           type: pickerResponse?.type,
         });
 
-        data.append('nomeColaborador', nome);
+        data.append('quantidade', quantidade);
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
         data.append(
@@ -106,14 +94,14 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
           valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
-        await api.post('/adiantamento', data);
+        await api.post('/alimentacao', data);
         setLoading(false);
 
         Alert.alert('Registro cadastrado');
-        setNome('');
+        setQuantidade('');
         setNomeLinha('');
-        setDescricao('');
         setValor('');
+        setDescricao('');
         setPickerResponse(null);
       } catch (error) {
         console.log(error);
@@ -121,69 +109,10 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
     }
   }
 
-  useEffect(() => {
-    async function loadRegister() {
-      const response = await api.get(`/adiantamento/${registerId}`);
-
-      // setRegisterRecovered(response.data);
-      setNome(response.data.nomeColaborador);
-      setNomeLinha(response.data.nomeLinha);
-      setDescricao(response.data.descricao);
-      setValor(inputValueMask(String(response.data.total) + '00'));
-      setUri(response.data.imagem.url);
-      setButtonAnexar(true);
-    }
-
-    if (route.params) {
-      const {registerId: id} = route.params.params;
-      setRegisterId(id);
-    }
-
-    if (registerId) {
-      loadRegister();
-    }
-  }, [registerId, route]);
-
-  async function updateRegister() {
-    try {
-      setLoading(true);
-      const data = new FormData();
-
-      pickerResponse &&
-        data.append('file', {
-          name: !pickerResponse?.fileName
-            ? String(Date.now())
-            : pickerResponse?.fileName,
-          uri: pickerResponse?.uri,
-          type: pickerResponse?.type,
-        });
-
-      nome && data.append('nomeColaborador', nome);
-      nomeLinha && data.append('nomeLinha', nomeLinha);
-      descricao && data.append('descricao', descricao);
-      valor &&
-        data.append(
-          'total',
-          valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
-        );
-
-      await api.put(`/adiantamento/${registerId}`, data);
-      Alert.alert('Registro alterado!');
-      navigation.navigate('AdiantamentoList', {
-        params: {reloadPage: true},
-      });
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  }
   return (
-    <>
-      <HeaderName namePage="Cadastrar Adiantamento" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{flexGrow: 1}}>
+    <SafeAreaView style={{backgroundColor: 'red'}}>
+      <HeaderName namePage="Cadastrar Alimentação" />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Container>
           <BoxInput>
             <Input
@@ -195,17 +124,10 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={setNome}
-              value={nome}
-              placeholder="Nome Colaborador"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
-              onChangeText={e => setDescricao(e)}
-              value={descricao}
-              placeholder="Descrição"
+              onChangeText={setQuantidade}
+              value={quantidade}
+              placeholder="Quantidade"
+              keyboardType="numeric"
             />
           </BoxInput>
 
@@ -213,8 +135,16 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
             <Input
               onChangeText={e => setValor(inputValueMask(e))}
               value={valor}
-              placeholder="Valor"
+              placeholder="Total"
               keyboardType="numeric"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={setDescricao}
+              value={descricao}
+              placeholder="Descrição"
             />
           </BoxInput>
 
@@ -237,8 +167,6 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
           {pickerResponse && <Preview source={{uri: pickerResponse.uri}} />}
 
-          {!!uri && <Preview source={{uri: uri}} />}
-
           {!!error && <Erro>{error}</Erro>}
 
           {loading ? (
@@ -246,23 +174,12 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
               <ActivityIndicator size="large" color="#208eeb" />
             </Loading>
           ) : (
-            <Button
-              onPress={() => {
-                if (!registerId) {
-                  register();
-                } else {
-                  updateRegister();
-                }
-              }}>
-              {!registerId ? (
-                <TextButton>Cadastrar</TextButton>
-              ) : (
-                <TextButton>Salvar</TextButton>
-              )}
+            <Button onPress={register}>
+              <TextButton>Cadastrar</TextButton>
             </Button>
           )}
         </Container>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }

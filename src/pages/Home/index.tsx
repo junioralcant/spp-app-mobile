@@ -3,7 +3,6 @@ import {FlatList, ScrollView} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {Container, Button, TextButton} from './styles';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import HeaderName from '../../components/HeaderName';
 
 interface iNavigationProps {
@@ -61,7 +60,7 @@ export default function Home({navigation}: iNavigationProps) {
   );
 
   return (
-    <SafeAreaView>
+    <>
       <HeaderName namePage="Home" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Container>
@@ -73,6 +72,6 @@ export default function Home({navigation}: iNavigationProps) {
           />
         </Container>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 }

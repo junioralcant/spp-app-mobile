@@ -88,6 +88,7 @@ export const BoxList = styled.View`
   align-items: center;
   width: 100%;
   margin-top: 15px;
+  margin-bottom: 95px;
 `;
 export const Card = styled.View`
   width: 90%;
@@ -149,5 +150,20 @@ export const BoxDescriptionContent = styled.View`
 export const TextDescriptionContent = styled.Text`
   color: #fff;
   font-size: 18px;
+  /* margin-bottom: 7px; */
+`;
+
+export const ButtonCloseModal = styled.TouchableOpacity`
+  /* background-color: #ae3d0c; */
+  position: absolute;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1;
+  top: 50px;
+  right: 20px;
+`;
+
+export const StatusBar = styled.StatusBar`
+  height: 20px;
   /* margin-bottom: 7px; */
 `;
