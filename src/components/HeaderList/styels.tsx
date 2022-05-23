@@ -47,3 +47,7 @@ export const TotalGerister = styled.Text`
   font-size: 17px;
   color: #fff;
 `;
+
+export const ButtonExit = styled.TouchableOpacity`
+  background-color: #ae3d0c;
+`;

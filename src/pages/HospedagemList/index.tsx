@@ -33,14 +33,16 @@ import {
   TextDataContentFoco,
   TextDescriptionContent,
 } from './styles';
+
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-interface IAdiantamentoType {
+interface IhospegemType {
   _id: string;
   nomeLinha: string;
-  nomeColaborador: string;
+  valorUnitario: number;
+  nomeHotel: string;
   imagem: {
     url: string;
   };
@@ -54,10 +56,7 @@ interface iNavigationProps {
   route: StackNavigationProp<any, any>;
 }
 
-export default function AdiantamentoList({
-  navigation,
-  route,
-}: iNavigationProps) {
+export default function HospedagemList({navigation, route}: iNavigationProps) {
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
 
@@ -65,11 +64,11 @@ export default function AdiantamentoList({
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
-  const [colaborador, setColaborador] = useState('');
+  const [nomeHotel, setNomeHotel] = useState('');
 
   const [search, setSearch] = useState(false);
 
-  const [adiantamentos, setAdiantamentos] = useState<IAdiantamentoType[]>([]);
+  const [hospedagens, setHospedagens] = useState<IhospegemType[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [imageShow, setImageShow] = useState('');
@@ -81,15 +80,15 @@ export default function AdiantamentoList({
   ];
 
   useEffect(() => {
-    async function loadAdiantamento() {
+    async function loadhospegem() {
       const response = await api.get(
-        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
+        `/hospedagem?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&nomeHotel=${nomeHotel}`,
       );
-      setAdiantamentos(response.data);
+      setHospedagens(response.data);
     }
 
-    loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+    loadhospegem();
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, nomeHotel]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -118,7 +117,7 @@ export default function AdiantamentoList({
 
   let total = 0;
 
-  adiantamentos.filter(item => {
+  hospedagens.filter(item => {
     if (item.total) {
       total += item.total;
     }
@@ -136,9 +135,9 @@ export default function AdiantamentoList({
         text: 'Sim',
         onPress: async () => {
           try {
-            await api.delete(`/adiantamento/${id}`);
-            const response = await api.get('/adiantamento');
-            setAdiantamentos(response.data);
+            await api.delete(`/hospedagem/${id}`);
+            const response = await api.get('/hospedagem');
+            setHospedagens(response.data);
             Alert.alert('Registro deletado com sucesso!');
           } catch (error) {
             console.log(error);
@@ -150,7 +149,7 @@ export default function AdiantamentoList({
   }
 
   function editRegister(id: string) {
-    navigation.navigate('Adiantamento', {
+    navigation.navigate('Hospedagem', {
       params: {registerId: id},
     });
   }
@@ -169,9 +168,9 @@ export default function AdiantamentoList({
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Adiantamento"
+        namePage="Listagem Hospedagem"
         total={total}
-        register={adiantamentos.length}
+        register={hospedagens.length}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -187,9 +186,9 @@ export default function AdiantamentoList({
 
           <BoxInput>
             <Input
-              onChangeText={setColaborador}
-              value={colaborador}
-              placeholder="Buscar por colaborador"
+              onChangeText={setNomeHotel}
+              value={nomeHotel}
+              placeholder="Buscar por nome do hotel"
             />
           </BoxInput>
 
@@ -229,15 +228,14 @@ export default function AdiantamentoList({
           </BoxInputsDate>
 
           <BoxList>
-            {adiantamentos.map(adiantamento => (
-              <Card key={adiantamento._id}>
+            {hospedagens.map(hospegem => (
+              <Card key={hospegem._id}>
                 <HeaderCard>
                   <ButtonHeaderDelete
-                    onPress={() => deleteGegister(adiantamento._id)}>
+                    onPress={() => deleteGegister(hospegem._id)}>
                     <Icons name="delete" size={30} color="#FFF" />
                   </ButtonHeaderDelete>
-                  <ButtonHeaderEdite
-                    onPress={() => editRegister(adiantamento._id)}>
+                  <ButtonHeaderEdite onPress={() => editRegister(hospegem._id)}>
                     <Icons name="edit" size={30} color="#FFF" />
                   </ButtonHeaderEdite>
                 </HeaderCard>
@@ -246,20 +244,28 @@ export default function AdiantamentoList({
                   <BoxDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Data:</TextDataContentFoco>{' '}
-                      {moment(adiantamento.createdAt).format('DD-MM-YYYY')}
+                      {moment(hospegem.createdAt).format('DD-MM-YYYY')}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Linha:</TextDataContentFoco>{' '}
-                      {adiantamento.nomeLinha}
+                      {hospegem.nomeLinha}
                     </TextDataContent>
                     <TextDataContent>
-                      <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
-                      {adiantamento.nomeColaborador}
+                      <TextDataContentFoco>Hotel:</TextDataContentFoco>{' '}
+                      {hospegem.nomeHotel}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Valor Unitário:</TextDataContentFoco>{' '}
+                      {hospegem.valorUnitario &&
+                        hospegem.valorUnitario.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
-                      {adiantamento.total &&
-                        adiantamento.total.toLocaleString('pt-br', {
+                      {hospegem.total &&
+                        hospegem.total.toLocaleString('pt-br', {
                           style: 'currency',
                           currency: 'BRL',
                         })}
@@ -267,10 +273,10 @@ export default function AdiantamentoList({
                   </BoxDataContent>
 
                   <TouchableOpacity
-                    onPress={() => showModal(adiantamento.imagem.url)}>
+                    onPress={() => showModal(hospegem.imagem.url)}>
                     <ImageContent
                       source={{
-                        uri: adiantamento.imagem.url,
+                        uri: hospegem.imagem.url,
                       }}
                     />
                   </TouchableOpacity>
@@ -279,7 +285,7 @@ export default function AdiantamentoList({
                 <BoxDescriptionContent>
                   <TextDataContent>Descrição</TextDataContent>
                   <TextDescriptionContent>
-                    {adiantamento.descricao}
+                    {hospegem.descricao}
                   </TextDescriptionContent>
                 </BoxDescriptionContent>
               </Card>

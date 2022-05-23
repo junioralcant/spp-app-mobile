@@ -61,7 +61,7 @@ export default function Home({navigation}: iNavigationProps) {
 
   return (
     <>
-      <HeaderName namePage="Home" />
+      <HeaderName namePage="Home" navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Container>
           <FlatList

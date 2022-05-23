@@ -13,3 +13,9 @@ export const TextHeader = styled.Text`
   font-size: 20px;
   color: #fff;
 `;
+
+export const ButtonExit = styled.TouchableOpacity`
+  position: absolute;
+  top: 5px;
+  right: 30px;
+`;

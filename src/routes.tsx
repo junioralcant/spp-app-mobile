@@ -9,8 +9,18 @@ import Adiantamento from './pages/Adiantamento';
 import AdiantamentoList from './pages/AdiantamentoList';
 
 import Alimentacao from './pages/Alimentacao';
+import AlimentacaoList from './pages/AlimentacaoList';
 
 import PageListOrAdd from './pages/PageListOrAdd';
+
+import Abastecimento from './pages/Abastecimento';
+import AbastecimentoList from './pages/AbastecimentoList';
+
+import DespesasExtras from './pages/DespesasExtras';
+import DespesasExtrasList from './pages/DespesasExtrasList';
+
+import Hospedagem from './pages/Hospedagem';
+import HospedagemList from './pages/HospedagemList';
 
 export default function Routes() {
   const Stack = createStackNavigator();
@@ -55,6 +65,62 @@ export default function Routes() {
           name="Alimentacao"
           component={Alimentacao}
           options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="AlimentacaoList"
+          component={AlimentacaoList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Abastecimento"
+          component={Abastecimento}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="AbastecimentoList"
+          component={AbastecimentoList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="DespesaExtra"
+          component={DespesasExtras}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="DespesaExtraList"
+          component={DespesasExtrasList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Hospedagem"
+          component={Hospedagem}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="HospedagemList"
+          component={HospedagemList}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

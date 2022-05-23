@@ -19,7 +19,6 @@ import {
   Preview,
   TextButton,
 } from './styles';
-
 import {ImagePickerResponse} from 'react-native-image-picker/src';
 import HeaderName from '../../components/HeaderName';
 import inputValueMask from '../../components/inputValueMask';
@@ -31,21 +30,23 @@ interface INavigationProps {
   route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
 }
 
-export default function Alimentacao({navigation, route}: INavigationProps) {
-  const [quantidade, setQuantidade] = useState('');
+export default function DespesasExtras({navigation, route}: INavigationProps) {
+  const [item, setItem] = useState('');
   const [nomeLinha, setNomeLinha] = useState('');
+  const [quantidade, setQuantidade] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [uri, setUri] = useState('');
+
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
-  const [uri, setUri] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [registerId, setRegisterId] = useState('');
+
   const [pickerResponse, setPickerResponse] =
     useState<ImagePickerResponse | null>();
-
-  const [registerId, setRegisterId] = useState('');
 
   function openComera() {
     ImagePicker.launchCamera(
@@ -86,6 +87,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
     } else {
       try {
         setError('');
+
         setLoading(true);
         const data = new FormData();
 
@@ -97,6 +99,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           type: pickerResponse?.type,
         });
 
+        data.append('item', item);
         data.append('quantidade', quantidade);
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
@@ -105,14 +108,15 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
-        await api.post('/alimentacao', data);
+        await api.post('/despesa-extra', data);
         setLoading(false);
 
         Alert.alert('Registro cadastrado');
+        setItem('');
         setQuantidade('');
         setNomeLinha('');
-        setValor('');
         setDescricao('');
+        setValor('');
         setPickerResponse(null);
       } catch (error) {
         console.log(error);
@@ -122,9 +126,10 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
   useEffect(() => {
     async function loadRegister() {
-      const response = await api.get(`/alimentacao/${registerId}`);
+      const response = await api.get(`/despesa-extra/${registerId}`);
 
       // setRegisterRecovered(response.data);
+      setItem(response.data.item);
       setQuantidade(String(response.data.quantidade));
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
@@ -157,6 +162,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           type: pickerResponse?.type,
         });
 
+      item && data.append('item', item);
       if (quantidade && quantidade !== 'undefined' && quantidade !== 'null') {
         data.append('quantidade', quantidade);
       }
@@ -168,9 +174,9 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
-      await api.put(`/alimentacao/${registerId}`, data);
+      await api.put(`/despesa-extra/${registerId}`, data);
       Alert.alert('Registro alterado!');
-      navigation.navigate('AlimentacaoList', {
+      navigation.navigate('DespesaExtraList', {
         params: {reloadPage: true},
       });
       setLoading(false);
@@ -183,15 +189,25 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
   return (
     <>
       <HeaderName
-        namePage={!registerId ? 'Cadastrar Alimentação' : 'Alterar Alimentação'}
+        namePage={!registerId ? 'Cadastrar Despesa' : 'Alterar Despesa'}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}>
         <Container>
           <BoxInput>
             <Input
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Nome da linha"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={setItem}
+              value={item}
+              placeholder="Nome item"
             />
           </BoxInput>
 
@@ -206,18 +222,18 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={e => setValor(inputValueMask(e))}
-              value={valor}
-              placeholder="Total"
-              keyboardType="numeric"
+              onChangeText={e => setDescricao(e)}
+              value={descricao}
+              placeholder="Descrição"
             />
           </BoxInput>
 
           <BoxInput>
             <Input
-              onChangeText={setDescricao}
-              value={descricao}
-              placeholder="Descrição"
+              onChangeText={e => setValor(inputValueMask(e))}
+              value={valor}
+              placeholder="Total"
+              keyboardType="numeric"
             />
           </BoxInput>
 

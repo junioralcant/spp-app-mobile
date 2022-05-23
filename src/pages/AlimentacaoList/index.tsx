@@ -33,6 +33,7 @@ import {
   TextDataContentFoco,
   TextDescriptionContent,
 } from './styles';
+
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -40,7 +41,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 interface IAdiantamentoType {
   _id: string;
   nomeLinha: string;
-  nomeColaborador: string;
+  quantidade: string;
   imagem: {
     url: string;
   };
@@ -54,10 +55,7 @@ interface iNavigationProps {
   route: StackNavigationProp<any, any>;
 }
 
-export default function AdiantamentoList({
-  navigation,
-  route,
-}: iNavigationProps) {
+export default function AlimentacaoList({navigation, route}: iNavigationProps) {
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
 
@@ -65,11 +63,10 @@ export default function AdiantamentoList({
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
-  const [colaborador, setColaborador] = useState('');
 
   const [search, setSearch] = useState(false);
 
-  const [adiantamentos, setAdiantamentos] = useState<IAdiantamentoType[]>([]);
+  const [alimentacoes, setAlimentacoes] = useState<IAdiantamentoType[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [imageShow, setImageShow] = useState('');
@@ -83,13 +80,13 @@ export default function AdiantamentoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
+        `/alimentacoes?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
       );
-      setAdiantamentos(response.data);
+      setAlimentacoes(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -118,7 +115,7 @@ export default function AdiantamentoList({
 
   let total = 0;
 
-  adiantamentos.filter(item => {
+  alimentacoes.filter(item => {
     if (item.total) {
       total += item.total;
     }
@@ -136,9 +133,9 @@ export default function AdiantamentoList({
         text: 'Sim',
         onPress: async () => {
           try {
-            await api.delete(`/adiantamento/${id}`);
-            const response = await api.get('/adiantamento');
-            setAdiantamentos(response.data);
+            await api.delete(`/alimentacao/${id}`);
+            const response = await api.get('/alimentacoes');
+            setAlimentacoes(response.data);
             Alert.alert('Registro deletado com sucesso!');
           } catch (error) {
             console.log(error);
@@ -150,7 +147,7 @@ export default function AdiantamentoList({
   }
 
   function editRegister(id: string) {
-    navigation.navigate('Adiantamento', {
+    navigation.navigate('Alimentacao', {
       params: {registerId: id},
     });
   }
@@ -169,9 +166,9 @@ export default function AdiantamentoList({
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Adiantamento"
+        namePage="Listagem Alimentação"
         total={total}
-        register={adiantamentos.length}
+        register={alimentacoes.length}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -182,14 +179,6 @@ export default function AdiantamentoList({
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
-              onChangeText={setColaborador}
-              value={colaborador}
-              placeholder="Buscar por colaborador"
             />
           </BoxInput>
 
@@ -229,7 +218,7 @@ export default function AdiantamentoList({
           </BoxInputsDate>
 
           <BoxList>
-            {adiantamentos.map(adiantamento => (
+            {alimentacoes.map(adiantamento => (
               <Card key={adiantamento._id}>
                 <HeaderCard>
                   <ButtonHeaderDelete
@@ -253,8 +242,8 @@ export default function AdiantamentoList({
                       {adiantamento.nomeLinha}
                     </TextDataContent>
                     <TextDataContent>
-                      <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
-                      {adiantamento.nomeColaborador}
+                      <TextDataContentFoco>Quantidade:</TextDataContentFoco>{' '}
+                      {adiantamento.quantidade}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}

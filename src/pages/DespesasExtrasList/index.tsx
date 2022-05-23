@@ -33,6 +33,7 @@ import {
   TextDataContentFoco,
   TextDescriptionContent,
 } from './styles';
+
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -40,7 +41,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 interface IAdiantamentoType {
   _id: string;
   nomeLinha: string;
-  nomeColaborador: string;
+  quantidade: string;
+  item: string;
   imagem: {
     url: string;
   };
@@ -54,7 +56,7 @@ interface iNavigationProps {
   route: StackNavigationProp<any, any>;
 }
 
-export default function AdiantamentoList({
+export default function DespesasExtrasList({
   navigation,
   route,
 }: iNavigationProps) {
@@ -65,11 +67,10 @@ export default function AdiantamentoList({
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
-  const [colaborador, setColaborador] = useState('');
 
   const [search, setSearch] = useState(false);
 
-  const [adiantamentos, setAdiantamentos] = useState<IAdiantamentoType[]>([]);
+  const [despesas, setDespesas] = useState<IAdiantamentoType[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [imageShow, setImageShow] = useState('');
@@ -83,13 +84,13 @@ export default function AdiantamentoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
+        `/despesa-extra?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
       );
-      setAdiantamentos(response.data);
+      setDespesas(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -118,7 +119,7 @@ export default function AdiantamentoList({
 
   let total = 0;
 
-  adiantamentos.filter(item => {
+  despesas.filter(item => {
     if (item.total) {
       total += item.total;
     }
@@ -136,9 +137,9 @@ export default function AdiantamentoList({
         text: 'Sim',
         onPress: async () => {
           try {
-            await api.delete(`/adiantamento/${id}`);
-            const response = await api.get('/adiantamento');
-            setAdiantamentos(response.data);
+            await api.delete(`/despesa-extra/${id}`);
+            const response = await api.get('/despesa-extra');
+            setDespesas(response.data);
             Alert.alert('Registro deletado com sucesso!');
           } catch (error) {
             console.log(error);
@@ -150,7 +151,7 @@ export default function AdiantamentoList({
   }
 
   function editRegister(id: string) {
-    navigation.navigate('Adiantamento', {
+    navigation.navigate('DespesaExtra', {
       params: {registerId: id},
     });
   }
@@ -169,9 +170,9 @@ export default function AdiantamentoList({
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Adiantamento"
+        namePage="Listagem Despesa"
         total={total}
-        register={adiantamentos.length}
+        register={despesas.length}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -182,14 +183,6 @@ export default function AdiantamentoList({
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
-              onChangeText={setColaborador}
-              value={colaborador}
-              placeholder="Buscar por colaborador"
             />
           </BoxInput>
 
@@ -229,7 +222,7 @@ export default function AdiantamentoList({
           </BoxInputsDate>
 
           <BoxList>
-            {adiantamentos.map(adiantamento => (
+            {despesas.map(adiantamento => (
               <Card key={adiantamento._id}>
                 <HeaderCard>
                   <ButtonHeaderDelete
@@ -253,8 +246,12 @@ export default function AdiantamentoList({
                       {adiantamento.nomeLinha}
                     </TextDataContent>
                     <TextDataContent>
-                      <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
-                      {adiantamento.nomeColaborador}
+                      <TextDataContentFoco>Item:</TextDataContentFoco>{' '}
+                      {adiantamento.item}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Quantidade:</TextDataContentFoco>{' '}
+                      {adiantamento.quantidade}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}

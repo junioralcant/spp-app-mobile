@@ -40,7 +40,9 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 interface IAdiantamentoType {
   _id: string;
   nomeLinha: string;
-  nomeColaborador: string;
+  veiculo: string;
+  litros: string;
+  valorUnitario: number;
   imagem: {
     url: string;
   };
@@ -65,7 +67,7 @@ export default function AdiantamentoList({
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
-  const [colaborador, setColaborador] = useState('');
+  const [veiculo, setVeiculo] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -83,13 +85,13 @@ export default function AdiantamentoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
+        `/abastecimento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&veiculo=${veiculo}`,
       );
       setAdiantamentos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, veiculo, route]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -136,8 +138,8 @@ export default function AdiantamentoList({
         text: 'Sim',
         onPress: async () => {
           try {
-            await api.delete(`/adiantamento/${id}`);
-            const response = await api.get('/adiantamento');
+            await api.delete(`/abastecimento/${id}`);
+            const response = await api.get('/abastecimento');
             setAdiantamentos(response.data);
             Alert.alert('Registro deletado com sucesso!');
           } catch (error) {
@@ -150,7 +152,7 @@ export default function AdiantamentoList({
   }
 
   function editRegister(id: string) {
-    navigation.navigate('Adiantamento', {
+    navigation.navigate('Abastecimento', {
       params: {registerId: id},
     });
   }
@@ -169,7 +171,7 @@ export default function AdiantamentoList({
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Adiantamento"
+        namePage="Listagem Abastecimento"
         total={total}
         register={adiantamentos.length}
       />
@@ -187,9 +189,9 @@ export default function AdiantamentoList({
 
           <BoxInput>
             <Input
-              onChangeText={setColaborador}
-              value={colaborador}
-              placeholder="Buscar por colaborador"
+              onChangeText={setVeiculo}
+              value={veiculo}
+              placeholder="Buscar por veiculo"
             />
           </BoxInput>
 
@@ -253,8 +255,22 @@ export default function AdiantamentoList({
                       {adiantamento.nomeLinha}
                     </TextDataContent>
                     <TextDataContent>
-                      <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
-                      {adiantamento.nomeColaborador}
+                      <TextDataContentFoco>Litros:</TextDataContentFoco>{' '}
+                      {adiantamento.litros} L
+                    </TextDataContent>
+
+                    <TextDataContent>
+                      <TextDataContentFoco>Valor Unitário:</TextDataContentFoco>
+                      {adiantamento.valorUnitario &&
+                        adiantamento.valorUnitario.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                    </TextDataContent>
+
+                    <TextDataContent>
+                      <TextDataContentFoco>Veiculo:</TextDataContentFoco>{' '}
+                      {adiantamento.veiculo}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}

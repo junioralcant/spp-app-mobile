@@ -19,7 +19,6 @@ import {
   Preview,
   TextButton,
 } from './styles';
-
 import {ImagePickerResponse} from 'react-native-image-picker/src';
 import HeaderName from '../../components/HeaderName';
 import inputValueMask from '../../components/inputValueMask';
@@ -31,21 +30,24 @@ interface INavigationProps {
   route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
 }
 
-export default function Alimentacao({navigation, route}: INavigationProps) {
-  const [quantidade, setQuantidade] = useState('');
+export default function Hospedagem({navigation, route}: INavigationProps) {
+  const [nomeHotel, setNomeHotel] = useState('');
   const [nomeLinha, setNomeLinha] = useState('');
+  const [diarias, setDiarias] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [uri, setUri] = useState('');
+  const [valorUnitario, setValorUnitario] = useState('');
+
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
-  const [uri, setUri] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [registerId, setRegisterId] = useState('');
+
   const [pickerResponse, setPickerResponse] =
     useState<ImagePickerResponse | null>();
-
-  const [registerId, setRegisterId] = useState('');
 
   function openComera() {
     ImagePicker.launchCamera(
@@ -86,6 +88,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
     } else {
       try {
         setError('');
+
         setLoading(true);
         const data = new FormData();
 
@@ -97,7 +100,12 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           type: pickerResponse?.type,
         });
 
-        data.append('quantidade', quantidade);
+        data.append('nomeHotel', nomeHotel);
+        data.append(
+          'valorUnitario',
+          valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
+        );
+        data.append('diarias', diarias);
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
         data.append(
@@ -105,14 +113,16 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
-        await api.post('/alimentacao', data);
+        await api.post('/hospedagem', data);
         setLoading(false);
 
         Alert.alert('Registro cadastrado');
-        setQuantidade('');
+        setNomeHotel('');
+        setDiarias('');
         setNomeLinha('');
-        setValor('');
+        setValorUnitario('');
         setDescricao('');
+        setValor('');
         setPickerResponse(null);
       } catch (error) {
         console.log(error);
@@ -122,13 +132,17 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
   useEffect(() => {
     async function loadRegister() {
-      const response = await api.get(`/alimentacao/${registerId}`);
+      const response = await api.get(`/hospedagem/${registerId}`);
 
       // setRegisterRecovered(response.data);
-      setQuantidade(String(response.data.quantidade));
+      setNomeHotel(response.data.nomeHotel);
+      setDiarias(String(response.data.diarias));
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
       setValor(inputValueMask(String(response.data.total) + '00'));
+      setValorUnitario(
+        inputValueMask(String(response.data.valorUnitario) + '00'),
+      );
       setUri(response.data.imagem.url);
       setButtonAnexar(true);
     }
@@ -157,20 +171,23 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
           type: pickerResponse?.type,
         });
 
-      if (quantidade && quantidade !== 'undefined' && quantidade !== 'null') {
-        data.append('quantidade', quantidade);
-      }
+      nomeHotel && data.append('nomeHotel', nomeHotel);
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
+      valorUnitario &&
+        data.append(
+          'valorUnitario',
+          valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
+        );
       valor &&
         data.append(
           'total',
           valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
-      await api.put(`/alimentacao/${registerId}`, data);
+      await api.put(`/hospedagem/${registerId}`, data);
       Alert.alert('Registro alterado!');
-      navigation.navigate('AlimentacaoList', {
+      navigation.navigate('HospedagemList', {
         params: {reloadPage: true},
       });
       setLoading(false);
@@ -183,9 +200,11 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
   return (
     <>
       <HeaderName
-        namePage={!registerId ? 'Cadastrar Alimentação' : 'Alterar Alimentação'}
+        namePage={!registerId ? 'Cadastrar Hospedagem' : 'Alterar Hospedagem'}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}>
         <Container>
           <BoxInput>
             <Input
@@ -197,9 +216,34 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={setQuantidade}
-              value={quantidade}
-              placeholder="Quantidade"
+              onChangeText={setNomeHotel}
+              value={nomeHotel}
+              placeholder="Nome hotel"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={setDiarias}
+              value={diarias}
+              placeholder="Diárias"
+              keyboardType="numeric"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={e => setDescricao(e)}
+              value={descricao}
+              placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={e => setValorUnitario(inputValueMask(e))}
+              value={valorUnitario}
+              placeholder="Valor unitário"
               keyboardType="numeric"
             />
           </BoxInput>
@@ -210,14 +254,6 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
               value={valor}
               placeholder="Total"
               keyboardType="numeric"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
-              onChangeText={setDescricao}
-              value={descricao}
-              placeholder="Descrição"
             />
           </BoxInput>
 

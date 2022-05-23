@@ -178,9 +178,14 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
       console.log(error);
     }
   }
+
   return (
     <>
-      <HeaderName namePage="Cadastrar Adiantamento" />
+      <HeaderName
+        namePage={
+          !registerId ? 'Cadastrar Adiantamento' : 'Alterar Adiantamento'
+        }
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>
