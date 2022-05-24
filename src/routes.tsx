@@ -22,6 +22,12 @@ import DespesasExtrasList from './pages/DespesasExtrasList';
 import Hospedagem from './pages/Hospedagem';
 import HospedagemList from './pages/HospedagemList';
 
+import Pecas from './pages/Pecas';
+import PecasList from './pages/PecasList';
+
+import Roco from './pages/Roco';
+import RocoList from './pages/RocoList';
+
 export default function Routes() {
   const Stack = createStackNavigator();
 
@@ -118,6 +124,37 @@ export default function Routes() {
         <Stack.Screen
           name="HospedagemList"
           component={HospedagemList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Pecas"
+          component={Pecas}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="PecasList"
+          component={PecasList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Roco"
+          component={Roco}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="RocoList"
+          component={RocoList}
           options={{
             headerShown: false,
           }}

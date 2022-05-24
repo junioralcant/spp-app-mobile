@@ -24,13 +24,17 @@ export default function HeaderList({namePage, total, register}: INamePageType) {
 
       <ContentHeader>
         <BoxTotal>
-          <TotalText>Total gasto</TotalText>
-          <Total>
-            {total.toLocaleString('pt-br', {
-              style: 'currency',
-              currency: 'BRL',
-            })}
-          </Total>
+          {namePage !== 'Listagem Roço' && (
+            <>
+              <TotalText>Total gasto</TotalText>
+              <Total>
+                {total.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
+              </Total>
+            </>
+          )}
         </BoxTotal>
 
         <BoxTotalGegister>
