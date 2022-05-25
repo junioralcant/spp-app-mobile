@@ -4,10 +4,12 @@ export const Container = styled.SafeAreaView`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #eff3f6;
+  margin-top: 40%;
 `;
 
-export const Image = styled.Image``;
+export const Image = styled.Image`
+  border-radius: 10px;
+`;
 
 export const BookBox = styled.Image`
   max-height: 300px;
@@ -40,16 +42,17 @@ export const BoxInput = styled.View`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 30px 20px 0 20px;
+  padding: 20px 20px 0 20px;
 `;
 
 export const Input = styled.TextInput`
   width: 100%;
-  height: 55px;
+  height: 60px;
   background-color: #fff;
-  margin: 0 0 15px 0;
-  border-radius: 30px;
+  margin: 0 0 0px 0;
+  border-radius: 10px;
   padding-left: 15px;
+  border: 1px #c4c4c4;
 `;
 
 export const ForgotPassword = styled.Text`
@@ -73,11 +76,11 @@ export const Button = styled.TouchableOpacity`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #208eeb;
+  background-color: #005f98;
   width: 90%;
-  height: 55px;
-  border-radius: 30px;
-  margin-top: 30px;
+  height: 65px;
+  border-radius: 10px;
+  margin-top: 10px;
   margin-bottom: 5px;
 `;
 

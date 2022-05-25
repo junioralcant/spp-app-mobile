@@ -202,6 +202,7 @@ export default function PecasList({navigation, route}: iNavigationProps) {
                 value={dataIncio}
                 placeholder="01/03/2020"
                 maxLength={10}
+                keyboardType="numeric"
               />
             </BoxInpuDate>
 
@@ -211,6 +212,7 @@ export default function PecasList({navigation, route}: iNavigationProps) {
                 value={dataFim}
                 placeholder="01/03/2023"
                 maxLength={10}
+                keyboardType="numeric"
               />
             </BoxInpuDate>
 

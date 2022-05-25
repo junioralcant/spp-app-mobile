@@ -4,9 +4,11 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {Container, Button, TextButton} from './styles';
 import HeaderName from '../../components/HeaderName';
+import {RouteProp} from '@react-navigation/native';
 
 interface iNavigationProps {
   navigation: StackNavigationProp<any, any>;
+  route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
 }
 
 interface IItemType {
@@ -16,7 +18,7 @@ interface IItemType {
   };
 }
 
-export default function Home({navigation}: iNavigationProps) {
+export default function Home({navigation, route}: iNavigationProps) {
   const DATA = [
     {
       title: 'Adiantamento',
@@ -46,6 +48,14 @@ export default function Home({navigation}: iNavigationProps) {
       title: 'Roço',
       page: 'Roco',
     },
+    {
+      title: 'Todas Despesas',
+      page: 'TodasDespesas',
+    },
+    {
+      title: 'Alterar Saldo',
+      page: 'AlterarSaldo',
+    },
   ];
 
   const buttonItem = ({item}: IItemType) => (
@@ -61,7 +71,7 @@ export default function Home({navigation}: iNavigationProps) {
 
   return (
     <>
-      <HeaderName namePage="Home" navigation={navigation} />
+      <HeaderName namePage="Home" navigation={navigation} route={route} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Container>
           <FlatList

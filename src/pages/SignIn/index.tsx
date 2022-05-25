@@ -5,13 +5,14 @@ import {CommonActions} from '@react-navigation/native';
 
 import api from '../../services/api';
 
-// import Logo from '../../assets/img/logo.jpg';
+import SPP from '../../assets/img/SPP.png';
 
 import {
   BoxInput,
   Button,
   Container,
   Erro,
+  Image,
   Input,
   Loading,
   TextButton,
@@ -87,7 +88,7 @@ export default function SignIn({navigation}: iNavigationProps) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Container>
-        {/* <Image source={Girl} /> */}
+        <Image source={SPP} />
         <BoxInput>
           <Input
             onChangeText={setEmail}

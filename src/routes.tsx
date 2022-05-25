@@ -28,6 +28,10 @@ import PecasList from './pages/PecasList';
 import Roco from './pages/Roco';
 import RocoList from './pages/RocoList';
 
+import TodasDespesasList from './pages/TodasDespesasList';
+
+import AlterarSaldo from './pages/AlterarSaldo';
+
 export default function Routes() {
   const Stack = createStackNavigator();
 
@@ -155,6 +159,22 @@ export default function Routes() {
         <Stack.Screen
           name="RocoList"
           component={RocoList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="TodasDespesasList"
+          component={TodasDespesasList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="AlterarSaldo"
+          component={AlterarSaldo}
           options={{
             headerShown: false,
           }}
