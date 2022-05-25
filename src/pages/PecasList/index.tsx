@@ -171,7 +171,7 @@ export default function PecasList({navigation, route}: iNavigationProps) {
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Hospedagem"
+        namePage="Listagem Peça"
         total={total}
         register={hospedagens.length}
       />

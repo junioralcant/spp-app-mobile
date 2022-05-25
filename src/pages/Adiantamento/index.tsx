@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, ScrollView} from 'react-native';
+import {ActivityIndicator, Alert, Modal, ScrollView} from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
 
@@ -11,6 +11,7 @@ import {
   Button,
   ButtonAnexar,
   ButtonAnexarText,
+  ButtonCloseModal,
   ButtonSelectPhoto,
   Container,
   Erro,
@@ -24,6 +25,8 @@ import HeaderName from '../../components/HeaderName';
 import inputValueMask from '../../components/inputValueMask';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -129,7 +132,17 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
       setNome(response.data.nomeColaborador);
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
-      setValor(inputValueMask(String(response.data.total) + '00'));
+
+      if (response.data.total) {
+        setValor(inputValueMask(String(response.data.total) + '00'));
+        if (String(response.data.total).split('.')[1].length === 2) {
+          setValor(inputValueMask(String(response.data.total)));
+        }
+        if (String(response.data.total).split('.')[1].length === 1) {
+          setValor(inputValueMask(String(response.data.total) + '0'));
+        }
+      }
+
       setUri(response.data.imagem.url);
       setButtonAnexar(true);
     }
@@ -179,8 +192,28 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
     }
   }
 
+  const [imageShow, setImageShow] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const images = [
+    {
+      url: imageShow,
+    },
+  ];
+
+  function showModal(uri: string) {
+    setImageShow(uri);
+    setModalVisible(true);
+  }
+
   return (
     <>
+      <Modal visible={modalVisible} transparent={true}>
+        <ButtonCloseModal onPress={() => setModalVisible(false)}>
+          <Icons name="closecircleo" size={38} color="#FFF" />
+        </ButtonCloseModal>
+        <ImageViewer imageUrls={images} />
+      </Modal>
       <HeaderName
         namePage={
           !registerId ? 'Cadastrar Adiantamento' : 'Alterar Adiantamento'
@@ -240,9 +273,17 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
             </BoxButtonsSelectPhoto>
           )}
 
-          {pickerResponse && <Preview source={{uri: pickerResponse.uri}} />}
+          {pickerResponse && (
+            <TouchableOpacity onPress={() => showModal(pickerResponse.uri!)}>
+              <Preview source={{uri: pickerResponse.uri}} />
+            </TouchableOpacity>
+          )}
 
-          {!!uri && <Preview source={{uri: uri}} />}
+          {!!uri && (
+            <TouchableOpacity onPress={() => showModal(uri)}>
+              <Preview source={{uri: uri}} />
+            </TouchableOpacity>
+          )}
 
           {!!error && <Erro>{error}</Erro>}
 

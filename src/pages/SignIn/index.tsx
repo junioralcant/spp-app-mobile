@@ -5,7 +5,7 @@ import {CommonActions} from '@react-navigation/native';
 
 import api from '../../services/api';
 
-import SPP from '../../assets/img/SPP.png';
+import SPP from '../../assets/img/LOGO.png';
 
 import {
   BoxInput,

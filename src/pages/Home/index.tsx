@@ -3,8 +3,8 @@ import {FlatList, ScrollView} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {Container, Button, TextButton} from './styles';
-import HeaderName from '../../components/HeaderName';
 import {RouteProp} from '@react-navigation/native';
+import HeaderHome from '../../components/HeaderHome';
 
 interface iNavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -71,7 +71,7 @@ export default function Home({navigation, route}: iNavigationProps) {
 
   return (
     <>
-      <HeaderName namePage="Home" navigation={navigation} route={route} />
+      <HeaderHome namePage="Home" navigation={navigation} route={route} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Container>
           <FlatList

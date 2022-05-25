@@ -97,3 +97,13 @@ export const Erro = styled.Text`
   margin-top: 20px;
   margin-bottom: 5px;
 `;
+
+export const ButtonCloseModal = styled.TouchableOpacity`
+  /* background-color: #ae3d0c; */
+  position: absolute;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1;
+  top: 50px;
+  right: 20px;
+`;
