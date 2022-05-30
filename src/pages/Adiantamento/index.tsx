@@ -241,18 +241,18 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={e => setDescricao(e)}
-              value={descricao}
-              placeholder="Descrição"
+              onChangeText={e => setValor(inputValueMask(e))}
+              value={valor}
+              placeholder="Valor"
+              keyboardType="numeric"
             />
           </BoxInput>
 
           <BoxInput>
             <Input
-              onChangeText={e => setValor(inputValueMask(e))}
-              value={valor}
-              placeholder="Valor"
-              keyboardType="numeric"
+              onChangeText={e => setDescricao(e)}
+              value={descricao}
+              placeholder="Descrição"
             />
           </BoxInput>
 

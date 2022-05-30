@@ -113,6 +113,7 @@ export default function AdiantamentoList({
     setDataInicio('');
     setDataInicioChecks('');
     setNomeLinha('');
+    setColaborador('');
     setSearch(false);
   }
 

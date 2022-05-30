@@ -259,12 +259,20 @@ export default function PecasList({navigation, route}: iNavigationProps) {
                       {peca.veiculo}
                     </TextDataContent>
                     <TextDataContent>
+                      <TextDataContentFoco>Peça:</TextDataContentFoco>{' '}
+                      {peca.nomePeca}
+                    </TextDataContent>
+                    <TextDataContent>
                       <TextDataContentFoco>Valor Unitário:</TextDataContentFoco>{' '}
                       {peca.valorUnitario &&
                         peca.valorUnitario.toLocaleString('pt-br', {
                           style: 'currency',
                           currency: 'BRL',
                         })}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Quantidade:</TextDataContentFoco>{' '}
+                      {peca.quantidade}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Desconto:</TextDataContentFoco>{' '}

@@ -281,14 +281,6 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={e => setDescricao(e)}
-              value={descricao}
-              placeholder="Descrição"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
               onChangeText={e => setValorUnitario(inputValueMask(e))}
               value={valorUnitario}
               placeholder="Valor unitário"
@@ -302,6 +294,14 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
               value={valor}
               placeholder="Total"
               keyboardType="numeric"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={e => setDescricao(e)}
+              value={descricao}
+              placeholder="Descrição"
             />
           </BoxInput>
 

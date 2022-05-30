@@ -115,6 +115,7 @@ export default function AdiantamentoList({
     setDataInicio('');
     setDataInicioChecks('');
     setNomeLinha('');
+    setVeiculo('');
     setSearch(false);
   }
 
@@ -257,6 +258,10 @@ export default function AdiantamentoList({
                       {adiantamento.nomeLinha}
                     </TextDataContent>
                     <TextDataContent>
+                      <TextDataContentFoco>Veiculo:</TextDataContentFoco>{' '}
+                      {adiantamento.veiculo}
+                    </TextDataContent>
+                    <TextDataContent>
                       <TextDataContentFoco>Litros:</TextDataContentFoco>{' '}
                       {adiantamento.litros} L
                     </TextDataContent>
@@ -270,10 +275,6 @@ export default function AdiantamentoList({
                         })}
                     </TextDataContent>
 
-                    <TextDataContent>
-                      <TextDataContentFoco>Veiculo:</TextDataContentFoco>{' '}
-                      {adiantamento.veiculo}
-                    </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
                       {adiantamento.total &&

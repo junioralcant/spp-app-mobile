@@ -46,6 +46,7 @@ interface IhospegemType {
   imagem: {
     url: string;
   };
+  diarias: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -255,6 +256,10 @@ export default function HospedagemList({navigation, route}: iNavigationProps) {
                     <TextDataContent>
                       <TextDataContentFoco>Hotel:</TextDataContentFoco>{' '}
                       {hospegem.nomeHotel}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Diárias:</TextDataContentFoco>{' '}
+                      {hospegem.diarias}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Valor Unitário:</TextDataContentFoco>{' '}
