@@ -34,19 +34,13 @@ export default function PageListOrAdd({navigation, route}: iNavigationProps) {
       <Container>
         {pageName !== 'Todas Despesas' && (
           <Button onPress={() => navigation.navigate(page)}>
-            {pageName === 'Alterar Saldo' ? (
-              <TextButton>Alterar</TextButton>
-            ) : (
-              <TextButton>Cadastar</TextButton>
-            )}
+            <TextButton>Cadastar</TextButton>
           </Button>
         )}
 
-        {pageName !== 'Alterar Saldo' && (
-          <Button onPress={() => navigation.navigate(`${page}List`)}>
-            <TextButton>Listar</TextButton>
-          </Button>
-        )}
+        <Button onPress={() => navigation.navigate(`${page}List`)}>
+          <TextButton>Listar</TextButton>
+        </Button>
       </Container>
     </SafeAreaView>
   );

@@ -47,3 +47,13 @@ export const TextButton = styled.Text`
   font-weight: bold;
   font-size: 15px;
 `;
+
+export const Erro = styled.Text`
+  align-self: center;
+  text-align: center;
+  color: #ff4d4d;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+`;

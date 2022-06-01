@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ActivityIndicator, Alert, ScrollView} from 'react-native';
 
 import api from '../../services/api';
@@ -7,6 +7,7 @@ import {
   BoxInput,
   Button,
   Container,
+  Erro,
   Input,
   Loading,
   TextButton,
@@ -21,46 +22,43 @@ interface INavigationProps {
 
 export default function AlterarSaldo({navigation}: INavigationProps) {
   const [valor, setValor] = useState('');
-  const [id, setId] = useState('');
 
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    async function loadRegister() {
-      const response = await api.get('/saldo');
+  async function register() {
+    if (!valor) {
+      setError('Informe um valor para continuar');
+    } else {
+      try {
+        setLoading(true);
+        const data = new FormData();
 
-      setValor(inputValueMask(String(response.data.total) + '00'));
-      setId(response.data._id);
-    }
+        data.append(
+          'total',
+          valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
+        );
 
-    loadRegister();
-  }, []);
+        await api.post('/saldo', {
+          total: valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
+        });
+        setLoading(false);
 
-  async function updateRegister() {
-    try {
-      setLoading(true);
-      let totalFormatted = valor
-        .replace('R$ ', '')
-        .replace('.', '')
-        .replace(',', '.');
-      const response = await api.put(`/saldo/${id}`, {total: totalFormatted});
-      console.log(response.data);
+        Alert.alert('Saldo cadastrado');
 
-      Alert.alert('Saldo alterado!');
-      navigation.navigate('Home', {
-        params: {reloadPage: true},
-      });
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
+        setValor('');
+        navigation.navigate('Home', {
+          params: {reloadPage: true},
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   return (
     <>
-      <HeaderName namePage={'Alterar Saldo'} />
+      <HeaderName namePage={'Cadastrar Saldo'} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>
@@ -74,6 +72,8 @@ export default function AlterarSaldo({navigation}: INavigationProps) {
             />
           </BoxInput>
 
+          {!!error && <Erro>{error}</Erro>}
+
           {loading ? (
             <Loading>
               <ActivityIndicator size="large" color="#208eeb" />
@@ -81,9 +81,9 @@ export default function AlterarSaldo({navigation}: INavigationProps) {
           ) : (
             <Button
               onPress={() => {
-                updateRegister();
+                register();
               }}>
-              <TextButton>Salvar</TextButton>
+              <TextButton>Cadastrar</TextButton>
             </Button>
           )}
         </Container>

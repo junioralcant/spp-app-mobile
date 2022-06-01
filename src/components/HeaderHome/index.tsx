@@ -30,12 +30,16 @@ interface ISaidasType {
   total: number;
 }
 
+interface ITotalsType {
+  total: number;
+}
+
 export default function HeaderHome({
   namePage,
   navigation,
   route,
 }: INamePageType) {
-  const [total, setTotal] = useState();
+  const [totals, setTotals] = useState<ITotalsType[]>([]);
   const [saidas, setSaidas] = useState<ISaidasType[]>([]);
 
   function exit() {
@@ -70,7 +74,7 @@ export default function HeaderHome({
     async function loadTotal() {
       const response = await api.get('/saldo');
 
-      setTotal(response.data.total);
+      setTotals(response.data);
     }
 
     loadTotal();
@@ -87,10 +91,17 @@ export default function HeaderHome({
   }, [route]);
 
   let totalSaidas = 0;
+  let total = 0;
 
   saidas.filter(item => {
     if (item.total) {
       totalSaidas += item.total;
+    }
+  });
+
+  totals.filter(item => {
+    if (item.total) {
+      total += item.total;
     }
   });
 

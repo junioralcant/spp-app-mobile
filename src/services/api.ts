@@ -2,7 +2,7 @@ import axios, {AxiosRequestConfig} from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const api = axios.create({
-  baseURL: 'https://api-spp-api.herokuapp.com',
+  baseURL: 'http://192.168.0.103:3001',
 });
 
 api.interceptors.request.use(

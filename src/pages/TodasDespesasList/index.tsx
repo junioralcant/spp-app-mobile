@@ -6,7 +6,6 @@ import Icons from 'react-native-vector-icons/AntDesign';
 
 import ImageViewer from 'react-native-image-zoom-viewer';
 
-import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 import {
@@ -33,6 +32,7 @@ import {
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import HeaderTodasDespesas from '../../components/HeaderTodasDespesas';
 
 interface IAdiantamentoType {
   _id: string;
@@ -51,9 +51,17 @@ interface iNavigationProps {
   route: StackNavigationProp<any, any>;
 }
 
-export default function TodasDespesasList({route}: iNavigationProps) {
+interface ITotalType {
+  total: number;
+}
+
+export default function TodasDespesasList({
+  route,
+  navigation,
+}: iNavigationProps) {
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
+  const [allDatas, setAllDatas] = useState('');
 
   const [dataInicioChecks, setDataInicioChecks] = useState('');
   const [dataFimChecks, setDataFimChecks] = useState('');
@@ -63,6 +71,7 @@ export default function TodasDespesasList({route}: iNavigationProps) {
   const [search, setSearch] = useState(false);
 
   const [dotasDepesas, setTodasDespesas] = useState<IAdiantamentoType[]>([]);
+  const [totals, setTotals] = useState<ITotalType[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [imageShow, setImageShow] = useState('');
@@ -84,6 +93,18 @@ export default function TodasDespesasList({route}: iNavigationProps) {
     loadAdiantamento();
   }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
 
+  useEffect(() => {
+    async function loadTotal() {
+      const response = await api.get(
+        `/saldo?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&allDatas=${allDatas}`,
+      );
+
+      setTotals(response.data);
+    }
+
+    loadTotal();
+  }, [route, dataFimChecks, dataInicioChecks, allDatas]);
+
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
       return;
@@ -94,6 +115,7 @@ export default function TodasDespesasList({route}: iNavigationProps) {
 
     let finalDate = String(moment(dataFim, 'DD-MM-YYYY').format('YYYY-MM-DD'));
 
+    setAllDatas('todas');
     setDataInicioChecks(initialDate);
     setDataFimChecks(finalDate);
 
@@ -105,17 +127,27 @@ export default function TodasDespesasList({route}: iNavigationProps) {
     setDataFimChecks('');
     setDataInicio('');
     setDataInicioChecks('');
+    setAllDatas('');
     setNomeLinha('');
     setSearch(false);
   }
 
-  let total = 0;
+  let totalSaidas = 0;
+  let totalSaldo = 0;
 
   dotasDepesas.filter(item => {
     if (item.total) {
-      total += item.total;
+      totalSaidas += item.total;
     }
   });
+
+  totals.filter(item => {
+    if (item.total) {
+      totalSaldo += item.total;
+    }
+  });
+
+  let resumo = totalSaldo - totalSaidas;
 
   function showModal(uri: string) {
     setImageShow(uri);
@@ -130,10 +162,12 @@ export default function TodasDespesasList({route}: iNavigationProps) {
         </ButtonCloseModal>
         <ImageViewer imageUrls={images} />
       </Modal>
-      <HeaderList
+      <HeaderTodasDespesas
         namePage="Todas as Despesas"
-        total={total}
-        register={dotasDepesas.length}
+        navigation={navigation}
+        totalSaidas={totalSaidas}
+        totalSaldo={totalSaldo}
+        resumo={resumo}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
