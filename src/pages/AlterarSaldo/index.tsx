@@ -32,12 +32,6 @@ export default function AlterarSaldo({navigation}: INavigationProps) {
     } else {
       try {
         setLoading(true);
-        const data = new FormData();
-
-        data.append(
-          'total',
-          valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
-        );
 
         await api.post('/saldo', {
           total: valor.replace('R$ ', '').replace('.', '').replace(',', '.'),

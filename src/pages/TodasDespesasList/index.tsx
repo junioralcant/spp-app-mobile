@@ -70,7 +70,7 @@ export default function TodasDespesasList({
 
   const [search, setSearch] = useState(false);
 
-  const [dotasDepesas, setTodasDespesas] = useState<IAdiantamentoType[]>([]);
+  const [todasDespesas, setTodasDespesas] = useState<IAdiantamentoType[]>([]);
   const [totals, setTotals] = useState<ITotalType[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -135,7 +135,7 @@ export default function TodasDespesasList({
   let totalSaidas = 0;
   let totalSaldo = 0;
 
-  dotasDepesas.filter(item => {
+  todasDespesas.filter(item => {
     if (item.total) {
       totalSaidas += item.total;
     }
@@ -168,6 +168,7 @@ export default function TodasDespesasList({
         totalSaidas={totalSaidas}
         totalSaldo={totalSaldo}
         resumo={resumo}
+        registros={todasDespesas.length}
       />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -219,7 +220,7 @@ export default function TodasDespesasList({
           </BoxInputsDate>
 
           <BoxList>
-            {dotasDepesas.map(despesa => (
+            {todasDespesas.map(despesa => (
               <Card key={despesa._id}>
                 <BoxCardContent>
                   <BoxDataContent>

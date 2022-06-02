@@ -32,7 +32,7 @@ export const BoxTotal = styled.View`
   margin-top: 10px;
 `;
 
-export const BoxTotalGegister = styled.View`
+export const BoxTotalRegister = styled.View`
   align-items: flex-end;
   margin-top: 10px;
 `;
@@ -48,7 +48,13 @@ export const Total = styled.Text`
   color: #38e372;
 `;
 
-export const TotalGerister = styled.Text`
+export const TotalRegisterNew = styled.Text`
+  font-weight: bold;
+  font-size: 17px;
+  color: #fff;
+`;
+
+export const TotalRegister = styled.Text`
   font-weight: bold;
   font-size: 17px;
   color: #ed657d;

@@ -5,14 +5,16 @@ import {RouteProp} from '@react-navigation/native';
 import {
   BoxResumoGegister,
   BoxTotal,
-  BoxTotalGegister,
+  BoxTotalRegister,
   ContentHeader,
   HeaderContent,
   ResumeTotal,
   Total,
-  TotalGerister,
+  TotalRegister,
+  TotalRegisterNew,
   TotalText,
 } from './styels';
+import {View} from 'react-native';
 
 interface INamePageType {
   namePage: string;
@@ -21,6 +23,7 @@ interface INamePageType {
   totalSaidas: number;
   totalSaldo: number;
   resumo: number;
+  registros: number;
 }
 
 export default function HeaderTodasDespesas({
@@ -28,6 +31,7 @@ export default function HeaderTodasDespesas({
   totalSaidas,
   totalSaldo,
   resumo,
+  registros,
 }: INamePageType) {
   return (
     <HeaderContent>
@@ -36,30 +40,37 @@ export default function HeaderTodasDespesas({
           <BoxTotal>
             {namePage !== 'Listagem Roço' && (
               <>
-                <TotalText>Caixa</TotalText>
-                <Total>
-                  {String(
-                    totalSaldo?.toLocaleString('pt-br', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    }),
-                  )}
-                </Total>
+                <View>
+                  <TotalText>Caixa</TotalText>
+                  <Total>
+                    {String(
+                      totalSaldo?.toLocaleString('pt-br', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }),
+                    )}
+                  </Total>
+                </View>
+
+                <View>
+                  <TotalText>Registros</TotalText>
+                  <TotalRegisterNew>{registros}</TotalRegisterNew>
+                </View>
               </>
             )}
           </BoxTotal>
 
-          <BoxTotalGegister>
+          <BoxTotalRegister>
             <BoxResumoGegister>
               <TotalText>Saídas</TotalText>
-              <TotalGerister>
+              <TotalRegister>
                 {String(
                   totalSaidas.toLocaleString('pt-br', {
                     style: 'currency',
                     currency: 'BRL',
                   }),
                 )}
-              </TotalGerister>
+              </TotalRegister>
             </BoxResumoGegister>
 
             {!!resumo && (
@@ -75,7 +86,7 @@ export default function HeaderTodasDespesas({
                 </ResumeTotal>
               </BoxResumoGegister>
             )}
-          </BoxTotalGegister>
+          </BoxTotalRegister>
         </ContentHeader>
       </>
     </HeaderContent>
