@@ -97,15 +97,14 @@ export default function Roco({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponseAntes) {
-      setError('Tire ou selecione uma foto de antes para continuar');
-    } else {
-      try {
-        setError('');
+    setError('Tire ou selecione uma foto de antes para continuar');
+    try {
+      setError('');
 
-        setLoading(true);
-        const data = new FormData();
+      setLoading(true);
+      const data = new FormData();
 
+      pickerResponseAntes &&
         data.append('fotoAntes', {
           name: !pickerResponseAntes?.fileName
             ? String(Date.now())
@@ -114,29 +113,28 @@ export default function Roco({navigation, route}: INavigationProps) {
           type: pickerResponseAntes?.type,
         });
 
-        pickerResponseDepois &&
-          data.append('fotoDepois', {
-            name: !pickerResponseDepois?.fileName
-              ? String(Date.now())
-              : pickerResponseDepois?.fileName,
-            uri: pickerResponseDepois?.uri,
-            type: pickerResponseDepois?.type,
-          });
+      pickerResponseDepois &&
+        data.append('fotoDepois', {
+          name: !pickerResponseDepois?.fileName
+            ? String(Date.now())
+            : pickerResponseDepois?.fileName,
+          uri: pickerResponseDepois?.uri,
+          type: pickerResponseDepois?.type,
+        });
 
-        data.append('nomeLinha', nomeLinha);
-        data.append('descricao', descricao);
+      data.append('nomeLinha', nomeLinha);
+      data.append('descricao', descricao);
 
-        await api.post('/roco', data);
-        setLoading(false);
+      await api.post('/roco', data);
+      setLoading(false);
 
-        Alert.alert('Registro cadastrado');
-        setNomeLinha('');
-        setDescricao('');
-        setPickerResponseAntes(null);
-        setPickerResponseDepois(null);
-      } catch (error) {
-        console.log(error);
-      }
+      Alert.alert('Registro cadastrado');
+      setNomeLinha('');
+      setDescricao('');
+      setPickerResponseAntes(null);
+      setPickerResponseDepois(null);
+    } catch (error) {
+      console.log(error);
     }
   }
 

@@ -246,15 +246,17 @@ export default function RocoList({navigation, route}: iNavigationProps) {
                   </BoxDataContent>
 
                   <BoxImagens>
-                    <ViewImagem onPress={() => showModal(roco.fotoAntes.url)}>
-                      <TextDataContent>Antes</TextDataContent>
+                    {roco.fotoAntes && (
+                      <ViewImagem onPress={() => showModal(roco.fotoAntes.url)}>
+                        <TextDataContent>Antes</TextDataContent>
 
-                      <ImageContent
-                        source={{
-                          uri: roco.fotoAntes.url,
-                        }}
-                      />
-                    </ViewImagem>
+                        <ImageContent
+                          source={{
+                            uri: roco.fotoAntes.url,
+                          }}
+                        />
+                      </ViewImagem>
+                    )}
 
                     {roco.fotoDepois && (
                       <ViewImagem
