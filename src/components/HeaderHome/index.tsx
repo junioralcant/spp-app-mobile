@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import Icons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import AsyncStorage from '@react-native-community/async-storage';
 import {StackNavigationProp} from '@react-navigation/stack';
 
@@ -8,6 +10,7 @@ import {
   BoxResumoGegister,
   BoxTotal,
   BoxTotalGegister,
+  BoxUserName,
   ButtonExit,
   ContentHeader,
   HeaderContent,
@@ -34,6 +37,10 @@ interface ITotalsType {
   total: number;
 }
 
+interface IUserType {
+  name: string;
+}
+
 export default function HeaderHome({
   namePage,
   navigation,
@@ -41,6 +48,7 @@ export default function HeaderHome({
 }: INamePageType) {
   const [totals, setTotals] = useState<ITotalsType[]>([]);
   const [saidas, setSaidas] = useState<ISaidasType[]>([]);
+  const [user, setUser] = useState<IUserType>();
 
   function exit() {
     Alert.alert('Sair', 'Tem certeza que deseja sair da aplicação?', [
@@ -73,7 +81,9 @@ export default function HeaderHome({
   useEffect(() => {
     async function loadTotal() {
       const response = await api.get('/saldo');
+      const responseUser = await AsyncStorage.getItem('user');
 
+      setUser(JSON.parse(responseUser!));
       setTotals(response.data);
     }
 
@@ -133,6 +143,12 @@ export default function HeaderHome({
             </BoxTotal>
 
             <BoxTotalGegister>
+              <BoxUserName>
+                <TotalText>{user?.name}</TotalText>
+                <TotalGerister>
+                  <AntDesign name="user" size={20} color="#fff" />
+                </TotalGerister>
+              </BoxUserName>
               <BoxResumoGegister>
                 <TotalText>Saídas</TotalText>
                 <TotalGerister>

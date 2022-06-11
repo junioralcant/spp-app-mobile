@@ -34,6 +34,9 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  userCreate: {
+    name: string;
+  };
   descricao: string;
   total: number;
   createdAt: Date;
@@ -196,6 +199,11 @@ export default function AlterarSaldoList({
                     <TextDataContent>
                       <TextDataContentFoco>Data:</TextDataContentFoco>{' '}
                       {moment(saldo.createdAt).format('DD-MM-YYYY')}
+                    </TextDataContent>
+
+                    <TextDataContent>
+                      <TextDataContentFoco>Para:</TextDataContentFoco>{' '}
+                      {saldo.userCreate && saldo.userCreate.name}
                     </TextDataContent>
 
                     <TextDataContent>

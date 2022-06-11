@@ -11,7 +11,7 @@ export const HeaderContent = styled.View`
 export const ButtonExit = styled.TouchableOpacity`
   position: absolute;
   top: 2px;
-  left: 30px;
+  left: 20px;
 `;
 
 export const TextHeader = styled.Text`
@@ -33,6 +33,7 @@ export const BoxTotal = styled.View`
 `;
 
 export const BoxTotalGegister = styled.View`
+  position: relative;
   align-items: flex-end;
   margin-top: 10px;
 `;
@@ -63,4 +64,17 @@ export const ResumeTotal = styled.Text`
 export const BoxResumoGegister = styled.View`
   justify-content: flex-end;
   align-items: flex-end;
+`;
+
+export const BoxUserName = styled.View`
+  position: absolute;
+
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-direction: row;
+  width: 60px;
+  margin-bottom: 5px;
+
+  top: -35px;
+  right: 5px;
 `;

@@ -61,7 +61,7 @@ export default function SignIn({navigation}: iNavigationProps) {
         console.log(response);
 
         await AsyncStorage.setItem('@SPP:token', response.data.token);
-        await AsyncStorage.setItem('userId', response.data.user._id);
+        await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
 
         navigation.dispatch(
           CommonActions.reset({
@@ -82,8 +82,6 @@ export default function SignIn({navigation}: iNavigationProps) {
       }
     }
   }
-
-  console.log(email.length);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
