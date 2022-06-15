@@ -66,6 +66,7 @@ export default function RocoList({navigation, route}: iNavigationProps) {
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
+  const [descricao, setDescricao] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -83,13 +84,13 @@ export default function RocoList({navigation, route}: iNavigationProps) {
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/roco?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
+        `/roco?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&descricao=${descricao}`,
       );
       setRocos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, descricao]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -113,6 +114,7 @@ export default function RocoList({navigation, route}: iNavigationProps) {
     setDataInicio('');
     setDataInicioChecks('');
     setNomeLinha('');
+    setDescricao('');
     setSearch(false);
   }
 
@@ -182,6 +184,14 @@ export default function RocoList({navigation, route}: iNavigationProps) {
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={setDescricao}
+              value={descricao}
+              placeholder="Buscar por descrição"
             />
           </BoxInput>
 
