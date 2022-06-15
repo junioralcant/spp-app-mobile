@@ -115,3 +115,34 @@ export const StatusBar = styled.StatusBar`
   height: 20px;
   /* margin-bottom: 7px; */
 `;
+
+export const BoxDescriptionContent = styled.View`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const TextDescriptionContent = styled.Text`
+  color: #fff;
+  font-size: 18px;
+  /* margin-bottom: 7px; */
+`;
+
+export const BoxInput = styled.View`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px 20px 0 20px;
+  margin-bottom: -10px;
+`;
+
+export const Input = styled.TextInput`
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  margin: 0 0 0px 0;
+  border-radius: 10px;
+  padding-left: 15px;
+  border: 1px #c4c4c4;
+`;

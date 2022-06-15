@@ -10,7 +10,9 @@ import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 import {
   BoxCardContent,
   BoxDataContent,
+  BoxDescriptionContent,
   BoxInpuDate,
+  BoxInput,
   BoxInputsDate,
   BoxList,
   ButtonClose,
@@ -19,10 +21,12 @@ import {
   Card,
   Container,
   HeaderCard,
+  Input,
   InputDate,
   TextButtonSearch,
   TextDataContent,
   TextDataContentFoco,
+  TextDescriptionContent,
 } from './styles';
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -54,6 +58,8 @@ export default function AlterarSaldoList({
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
 
+  const [descricao, setDescricao] = useState('');
+
   const [dataInicioChecks, setDataInicioChecks] = useState('');
   const [dataFimChecks, setDataFimChecks] = useState('');
 
@@ -67,13 +73,20 @@ export default function AlterarSaldoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/saldo?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}`,
+        `/saldo?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&descricao=${descricao}`,
       );
       setSaldos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+  }, [
+    dataFimChecks,
+    dataInicioChecks,
+    nomeLinha,
+    colaborador,
+    route,
+    descricao,
+  ]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -148,6 +161,13 @@ export default function AlterarSaldoList({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>
         <Container>
+          <BoxInput>
+            <Input
+              onChangeText={setDescricao}
+              value={descricao}
+              placeholder="Buscar descrição"
+            />
+          </BoxInput>
           <BoxInputsDate>
             <BoxInpuDate>
               <InputDate
@@ -216,6 +236,13 @@ export default function AlterarSaldoList({
                     </TextDataContent>
                   </BoxDataContent>
                 </BoxCardContent>
+
+                <BoxDescriptionContent>
+                  <TextDataContent>Descrição</TextDataContent>
+                  <TextDescriptionContent>
+                    {saldo.descricao}
+                  </TextDescriptionContent>
+                </BoxDescriptionContent>
               </Card>
             ))}
           </BoxList>

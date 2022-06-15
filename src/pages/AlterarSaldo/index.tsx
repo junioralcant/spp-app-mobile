@@ -22,6 +22,7 @@ interface INavigationProps {
 
 export default function AlterarSaldo({navigation}: INavigationProps) {
   const [valor, setValor] = useState('');
+  const [descricao, setDescricao] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,12 +36,15 @@ export default function AlterarSaldo({navigation}: INavigationProps) {
 
         await api.post('/saldo', {
           total: valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
+          descricao: descricao,
         });
         setLoading(false);
 
         Alert.alert('Saldo cadastrado');
 
         setValor('');
+        setDescricao('');
+
         navigation.navigate('Home', {
           params: {reloadPage: true},
         });
@@ -63,6 +67,14 @@ export default function AlterarSaldo({navigation}: INavigationProps) {
               value={valor}
               placeholder="Valor"
               keyboardType="numeric"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <Input
+              onChangeText={e => setDescricao(e)}
+              value={descricao}
+              placeholder="Descrição"
             />
           </BoxInput>
 
