@@ -26,7 +26,10 @@ import {RouteProp} from '@react-navigation/native';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
-  route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
+  route: RouteProp<
+    {params: {params: {registerId: string; pageName: string}}},
+    'params'
+  >;
 }
 
 export default function Roco({navigation, route}: INavigationProps) {
@@ -42,6 +45,7 @@ export default function Roco({navigation, route}: INavigationProps) {
   const [error, setError] = useState('');
 
   const [registerId, setRegisterId] = useState('');
+  const [pageName, setPageName] = useState('');
 
   const [pickerResponseAntes, setPickerResponseAntes] =
     useState<ImagePickerResponse | null>();
@@ -129,7 +133,7 @@ export default function Roco({navigation, route}: INavigationProps) {
       setLoading(false);
 
       Alert.alert('Registro cadastrado');
-      setNomeLinha('');
+      setNomeLinha(pageName);
       setDescricao('');
       setPickerResponseAntes(null);
       setPickerResponseDepois(null);
@@ -153,14 +157,17 @@ export default function Roco({navigation, route}: INavigationProps) {
     }
 
     if (route.params) {
-      const {registerId: id} = route.params.params;
+      const {registerId: id, pageName: page} = route.params.params;
       setRegisterId(id);
+      setPageName(page);
     }
 
     if (registerId) {
       loadRegister();
+    } else {
+      setNomeLinha(pageName);
     }
-  }, [registerId, route]);
+  }, [registerId, route, pageName]);
 
   async function updateRegister() {
     try {
@@ -191,7 +198,7 @@ export default function Roco({navigation, route}: INavigationProps) {
       await api.put(`/roco/${registerId}`, data);
       Alert.alert('Registro alterado!');
       navigation.navigate('RocoList', {
-        params: {reloadPage: true},
+        params: {reloadPage: true, pageName},
       });
       setLoading(false);
     } catch (error) {

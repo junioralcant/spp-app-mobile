@@ -37,6 +37,7 @@ import {
 } from './styles';
 import api from '../../services/api';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
 
 interface IAdiantamentoType {
   _id: string;
@@ -55,10 +56,12 @@ interface IAdiantamentoType {
 
 interface iNavigationProps {
   navigation: StackNavigationProp<any, any>;
-  route: StackNavigationProp<any, any>;
+  route: RouteProp<{params: {params: {pageName: string}}}, 'params'>;
 }
 
 export default function RocoList({navigation, route}: iNavigationProps) {
+  const {pageName} = route.params.params;
+
   const [dataIncio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
 
@@ -84,13 +87,13 @@ export default function RocoList({navigation, route}: iNavigationProps) {
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/roco?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&descricao=${descricao}`,
+        `/roco?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${pageName}&descricao=${descricao}`,
       );
       setRocos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, descricao]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, descricao, pageName]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -139,7 +142,9 @@ export default function RocoList({navigation, route}: iNavigationProps) {
         onPress: async () => {
           try {
             await api.delete(`/roco/${id}`);
-            const response = await api.get('/roco');
+            const response = await api.get(
+              `/roco?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${pageName}&descricao=${descricao}`,
+            );
             setRocos(response.data);
             Alert.alert('Registro deletado com sucesso!');
           } catch (error) {
@@ -153,7 +158,7 @@ export default function RocoList({navigation, route}: iNavigationProps) {
 
   function editRegister(id: string) {
     navigation.navigate('Roco', {
-      params: {registerId: id},
+      params: {registerId: id, pageName},
     });
   }
 
@@ -171,7 +176,7 @@ export default function RocoList({navigation, route}: iNavigationProps) {
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Roço"
+        namePage={`Listagem Roço ${pageName}`}
         total={total}
         register={rocos.length}
       />
@@ -179,13 +184,13 @@ export default function RocoList({navigation, route}: iNavigationProps) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>
         <Container>
-          <BoxInput>
+          {/* <BoxInput>
             <Input
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
             />
-          </BoxInput>
+          </BoxInput> */}
 
           <BoxInput>
             <Input

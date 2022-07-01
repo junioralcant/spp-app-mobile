@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import {Container, Button, TextButton} from './styles';
-import {SafeAreaView} from 'react-native';
+import {FlatList, SafeAreaView} from 'react-native';
 import HeaderName from '../../components/HeaderName';
 import {RouteProp} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -45,20 +45,78 @@ export default function PageListOrAdd({navigation, route}: iNavigationProps) {
     loadUser();
   }, []);
 
+  const DATA = [
+    {
+      title: 'TCAT',
+      page: 'Roco',
+    },
+    {
+      title: 'TCVC',
+      page: 'Roco',
+    },
+    {
+      title: 'TCMB',
+      page: 'Roco',
+    },
+    {
+      title: 'TMRU',
+      page: 'Roco',
+    },
+    {
+      title: 'ATTM',
+      page: 'Roco',
+    },
+  ];
+
+  const buttonItem = ({item}: IItemType) => (
+    <Button
+      onPress={() =>
+        navigation.navigate('PageListOrAdd', {
+          params: {page: item.page, pageName: item.title},
+        })
+      }>
+      <TextButton>{item.title}</TextButton>
+    </Button>
+  );
+
   return (
     <SafeAreaView>
       <HeaderName namePage={pageName} />
-      <Container>
-        {pageName !== 'Todas Despesas' && user?.role !== 'ROLE_ADMIN' && (
-          <Button onPress={() => navigation.navigate(page)}>
-            <TextButton>Cadastar</TextButton>
-          </Button>
-        )}
 
-        <Button onPress={() => navigation.navigate(`${page}List`)}>
-          <TextButton>Listar</TextButton>
-        </Button>
-      </Container>
+      {pageName === 'Roço' ? (
+        <Container>
+          <FlatList
+            data={DATA}
+            renderItem={buttonItem}
+            keyExtractor={item => item.title}
+            style={{width: '100%', paddingHorizontal: 20}}
+          />
+        </Container>
+      ) : (
+        <Container>
+          {pageName !== 'Todas Despesas' && user?.role !== 'ROLE_ADMIN' && (
+            <Button
+              onPress={() =>
+                // parametro pageName é usado apenas na listagem do Roço para saber o nome da linha
+                navigation.navigate(page, {
+                  params: {pageName},
+                })
+              }>
+              <TextButton>Cadastar</TextButton>
+            </Button>
+          )}
+
+          <Button
+            onPress={() =>
+              // parametro pageName é usado apenas na listagem do Roço para saber o nome da linha
+              navigation.navigate(`${page}List`, {
+                params: {pageName},
+              })
+            }>
+            <TextButton>Listar</TextButton>
+          </Button>
+        </Container>
+      )}
     </SafeAreaView>
   );
 }
