@@ -16,6 +16,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -28,6 +29,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -36,6 +39,7 @@ interface INavigationProps {
 
 export default function Alimentacao({navigation, route}: INavigationProps) {
   const [quantidade, setQuantidade] = useState('');
+  const [dataNota, setDataNota] = useState('');
   const [nomeLinha, setNomeLinha] = useState('');
   const [descricao, setDescricao] = useState('');
   const [valor, setValor] = useState('');
@@ -84,8 +88,8 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
-      setError('Tire uma foto para continuar');
+    if (!pickerResponse || !dataNota) {
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');
@@ -101,6 +105,10 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
         });
 
         data.append('quantidade', quantidade);
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
         data.append(
@@ -117,6 +125,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
         setValor('');
         setDescricao('');
         setPickerResponse(null);
+        setDataNota('');
       } catch (error) {
         console.log(error);
       }
@@ -129,6 +138,9 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setQuantidade(String(response.data.quantidade));
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
 
@@ -173,6 +185,11 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
       if (quantidade && quantidade !== 'undefined' && quantidade !== 'null') {
         data.append('quantidade', quantidade);
       }
+      dataNota &&
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
       valor &&
@@ -250,6 +267,16 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
               onChangeText={setDescricao}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2023"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 
