@@ -16,6 +16,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -27,6 +28,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -38,6 +41,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
   const [nomeLinha, setNomeLinha] = useState('');
   const [descricao, setDescricao] = useState('');
   const [uri, setUri] = useState('');
+  const [dataNota, setDataNota] = useState('');
 
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
@@ -84,8 +88,8 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
-      setError('Tire uma foto para continuar');
+    if (!pickerResponse || !dataNota) {
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');
@@ -102,6 +106,10 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         });
 
         data.append('nomeColaborador', nome);
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
         data.append(
@@ -118,6 +126,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         setDescricao('');
         setValor('');
         setPickerResponse(null);
+        setDataNota('');
       } catch (error) {
         console.log(error);
       }
@@ -130,6 +139,9 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setNome(response.data.nomeColaborador);
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
 
@@ -172,6 +184,11 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         });
 
       nome && data.append('nomeColaborador', nome);
+      dataNota &&
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
       valor &&
@@ -253,6 +270,16 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2020"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 

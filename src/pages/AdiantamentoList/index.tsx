@@ -269,14 +269,16 @@ export default function AdiantamentoList({
                     </TextDataContent>
                   </BoxDataContent>
 
-                  <TouchableOpacity
-                    onPress={() => showModal(adiantamento.imagem.url)}>
-                    <ImageContent
-                      source={{
-                        uri: adiantamento.imagem.url,
-                      }}
-                    />
-                  </TouchableOpacity>
+                  {adiantamento.imagem && (
+                    <TouchableOpacity
+                      onPress={() => showModal(adiantamento.imagem.url)}>
+                      <ImageContent
+                        source={{
+                          uri: adiantamento.imagem.url,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
                 </BoxCardContent>
 
                 <BoxDescriptionContent>
