@@ -22,6 +22,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -32,6 +33,8 @@ import inputValueMask from '../../components/inputValueMask';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -44,6 +47,7 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
   const [quantidade, setQuantidade] = useState('');
   const [descricao, setDescricao] = useState('');
   const [uri, setUri] = useState('');
+  const [dataNota, setDataNota] = useState('');
 
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
@@ -90,8 +94,8 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
-      setError('Tire uma foto para continuar');
+    if (!pickerResponse || !dataNota) {
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');
@@ -108,6 +112,10 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
         });
 
         data.append('item', item);
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
         data.append('quantidade', quantidade);
         data.append('nomeLinha', nomeLinha);
         data.append('descricao', descricao);
@@ -126,6 +134,7 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
         setDescricao('');
         setValor('');
         setPickerResponse(null);
+        setDataNota('');
       } catch (error) {
         console.log(error);
       }
@@ -138,6 +147,9 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setItem(response.data.item);
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setQuantidade(String(response.data.quantidade));
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
@@ -183,6 +195,11 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
       if (quantidade && quantidade !== 'undefined' && quantidade !== 'null') {
         data.append('quantidade', quantidade);
       }
+      dataNota &&
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
       valor &&
@@ -271,6 +288,16 @@ export default function DespesasExtras({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2020"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 
