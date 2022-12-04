@@ -22,6 +22,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -32,6 +33,8 @@ import inputValueMask from '../../components/inputValueMask';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import moment from 'moment';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -45,6 +48,7 @@ export default function Pecas({navigation, route}: INavigationProps) {
   const [descricao, setDescricao] = useState('');
   const [desconto, setDesconto] = useState('');
   const [quantidade, setQuantidade] = useState('');
+  const [dataNota, setDataNota] = useState('');
 
   const [uri, setUri] = useState('');
   const [valorUnitario, setValorUnitario] = useState('');
@@ -94,8 +98,8 @@ export default function Pecas({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
-      setError('Tire uma foto para continuar');
+    if (!pickerResponse || !dataNota) {
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');
@@ -112,6 +116,10 @@ export default function Pecas({navigation, route}: INavigationProps) {
         });
 
         data.append('nomePeca', nomePeca);
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
         data.append(
           'valorUnitario',
           valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
@@ -154,6 +162,9 @@ export default function Pecas({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setNomePeca(response.data.nomePeca);
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setVeiculo(String(response.data.veiculo));
       setQuantidade(String(response.data.quantidade));
       setNomeLinha(response.data.nomeLinha);
@@ -222,6 +233,11 @@ export default function Pecas({navigation, route}: INavigationProps) {
         });
 
       nomePeca && data.append('nomePeca', nomePeca);
+      dataNota &&
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
       desconto &&
@@ -344,6 +360,16 @@ export default function Pecas({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2020"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 
