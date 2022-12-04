@@ -22,6 +22,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -32,6 +33,8 @@ import inputValueMask from '../../components/inputValueMask';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -45,6 +48,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   const [descricao, setDescricao] = useState('');
   const [uri, setUri] = useState('');
   const [valorUnitario, setValorUnitario] = useState('');
+  const [dataNota, setDataNota] = useState('');
 
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
@@ -110,6 +114,10 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
         data.append('nomeHotel', nomeHotel);
         data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
+        data.append(
           'valorUnitario',
           valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
@@ -132,6 +140,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         setDescricao('');
         setValor('');
         setPickerResponse(null);
+        setDataNota('');
       } catch (error) {
         console.log(error);
       }
@@ -144,6 +153,9 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setNomeHotel(response.data.nomeHotel);
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setDiarias(String(response.data.diarias));
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
@@ -200,6 +212,10 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         });
 
       nomeHotel && data.append('nomeHotel', nomeHotel);
+      data.append(
+        'dataNota',
+        moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+      );
       nomeLinha && data.append('nomeLinha', nomeLinha);
       descricao && data.append('descricao', descricao);
       valorUnitario &&
@@ -302,6 +318,16 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2020"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 
