@@ -22,6 +22,7 @@ import {
   Container,
   Erro,
   Input,
+  InputDate,
   Loading,
   Preview,
   TextButton,
@@ -32,6 +33,8 @@ import inputValueMask from '../../components/inputValueMask';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -44,6 +47,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
   const [descricao, setDescricao] = useState('');
   const [veiculo, setVeiculo] = useState('');
   const [valorUnitario, setValorUnitario] = useState('');
+  const [dataNota, setDataNota] = useState('');
 
   const [uri, setUri] = useState('');
 
@@ -88,7 +92,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
+    if (!pickerResponse || !dataNota) {
       setError('Tire uma foto para continuar');
     } else {
       try {
@@ -106,6 +110,10 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
         });
 
         data.append('litros', litros);
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+        );
         data.append(
           'valorUnitario',
           valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
@@ -130,6 +138,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
         setValor('');
         setVeiculo('');
         setValorUnitario('');
+        setDataNota('');
         setPickerResponse(null);
       } catch (error) {
         console.log(error);
@@ -143,6 +152,9 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setLitros(String(response.data.litros));
+      setDataNota(
+        moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
+      );
       setNomeLinha(response.data.nomeLinha);
       setDescricao(response.data.descricao);
       setVeiculo(response.data.veiculo);
@@ -206,6 +218,11 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
         data.append(
           'valorUnitario',
           valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
+        );
+      dataNota &&
+        data.append(
+          'dataNota',
+          moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
         );
       veiculo && data.append('veiculo', veiculo);
       nomeLinha && data.append('nomeLinha', nomeLinha);
@@ -307,6 +324,16 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <InputDate
+              onChangeText={e => setDataNota(inputDataNascimentoMask(e))}
+              value={dataNota}
+              placeholder="01/03/2020"
+              maxLength={10}
+              keyboardType="numeric"
             />
           </BoxInput>
 

@@ -31,7 +31,7 @@ export const Preview = styled.Image`
 export const BoxInput = styled.View`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   padding: 20px 20px 0 20px;
 `;
@@ -106,4 +106,16 @@ export const ButtonCloseModal = styled.TouchableOpacity`
   z-index: 1;
   top: 50px;
   right: 20px;
+`;
+
+export const InputDate = styled.TextInput`
+  /* width: 100%; */
+  height: 60px;
+  background-color: #fff;
+  margin: 0 0 0px 0;
+  border-radius: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 1px #c4c4c4;
+  width: 150px;
 `;
