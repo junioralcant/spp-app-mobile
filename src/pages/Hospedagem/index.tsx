@@ -95,8 +95,8 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse) {
-      setError('Tire uma foto para continuar');
+    if (!pickerResponse || !dataNota) {
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');

@@ -150,6 +150,7 @@ export default function Pecas({navigation, route}: INavigationProps) {
         setValor('');
         setDesconto('');
         setPickerResponse(null);
+        setDataNota('');
       } catch (error) {
         console.log(error);
       }

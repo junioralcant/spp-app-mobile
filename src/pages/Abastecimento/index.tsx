@@ -93,7 +93,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
 
   async function register() {
     if (!pickerResponse || !dataNota) {
-      setError('Tire uma foto para continuar');
+      setError('Tire uma foto para continuar ou informe uma data');
     } else {
       try {
         setError('');

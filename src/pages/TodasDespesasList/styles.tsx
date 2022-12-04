@@ -150,3 +150,9 @@ export const StatusBar = styled.StatusBar`
   height: 20px;
   /* margin-bottom: 7px; */
 `;
+
+export const Loading = styled.View`
+  margin-top: 20px;
+  width: 60px;
+  height: 60px;
+`;

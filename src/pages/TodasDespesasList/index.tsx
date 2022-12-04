@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Modal} from 'react-native';
+import {ScrollView, Modal, ActivityIndicator} from 'react-native';
 import moment from 'moment';
 
 import Icons from 'react-native-vector-icons/AntDesign';
@@ -24,6 +24,7 @@ import {
   ImageContent,
   Input,
   InputDate,
+  Loading,
   TextButtonSearch,
   TextDataContent,
   TextDataContentFoco,
@@ -76,6 +77,8 @@ export default function TodasDespesasList({
   const [modalVisible, setModalVisible] = useState(false);
   const [imageShow, setImageShow] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   const images = [
     {
       url: imageShow,
@@ -84,10 +87,12 @@ export default function TodasDespesasList({
 
   useEffect(() => {
     async function loadAdiantamento() {
+      setLoading(true);
       const response = await api.get(
         `/todasdespesas?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
       );
       setTodasDespesas(response.data);
+      setLoading(false);
     }
 
     loadAdiantamento();
@@ -219,54 +224,62 @@ export default function TodasDespesasList({
             )}
           </BoxInputsDate>
 
-          <BoxList>
-            {todasDespesas.map(despesa => (
-              <Card key={despesa._id}>
-                <BoxCardContent>
-                  <BoxDataContent>
-                    <TextDataContent>
-                      <TextDataContentFoco>Data:</TextDataContentFoco>
-                      {moment(despesa.createdAt).format('DD-MM-YYYY')}
-                    </TextDataContent>
+          {loading ? (
+            <Loading>
+              <ActivityIndicator size="large" color="#208eeb" />
+            </Loading>
+          ) : (
+            <BoxList>
+              {todasDespesas.map(despesa => (
+                <Card key={despesa._id}>
+                  <BoxCardContent>
+                    <BoxDataContent>
+                      <TextDataContent>
+                        <TextDataContentFoco>Data:</TextDataContentFoco>
+                        {moment(despesa.createdAt).format('DD-MM-YYYY')}
+                      </TextDataContent>
 
-                    <TextDataContent>
-                      <TextDataContentFoco>Linha:</TextDataContentFoco>
-                      {despesa.nomeLinha}
-                    </TextDataContent>
-                    <TextDataContent>
-                      <TextDataContentFoco>Gasto com:</TextDataContentFoco>{' '}
-                      {despesa.title}
-                    </TextDataContent>
+                      <TextDataContent>
+                        <TextDataContentFoco>Linha:</TextDataContentFoco>
+                        {despesa.nomeLinha}
+                      </TextDataContent>
+                      <TextDataContent>
+                        <TextDataContentFoco>Gasto com:</TextDataContentFoco>{' '}
+                        {despesa.title}
+                      </TextDataContent>
 
-                    <TextDataContent>
-                      <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
-                      {despesa.total &&
-                        despesa.total.toLocaleString('pt-br', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
-                    </TextDataContent>
-                  </BoxDataContent>
+                      <TextDataContent>
+                        <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
+                        {despesa.total &&
+                          despesa.total.toLocaleString('pt-br', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                      </TextDataContent>
+                    </BoxDataContent>
 
-                  <TouchableOpacity
-                    onPress={() => showModal(despesa.imagem.url)}>
-                    <ImageContent
-                      source={{
-                        uri: despesa.imagem.url,
-                      }}
-                    />
-                  </TouchableOpacity>
-                </BoxCardContent>
+                    {despesa.imagem !== null && (
+                      <TouchableOpacity
+                        onPress={() => showModal(despesa.imagem.url)}>
+                        <ImageContent
+                          source={{
+                            uri: despesa.imagem.url,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </BoxCardContent>
 
-                <BoxDescriptionContent>
-                  <TextDataContent>Descrição</TextDataContent>
-                  <TextDescriptionContent>
-                    {despesa.descricao}
-                  </TextDescriptionContent>
-                </BoxDescriptionContent>
-              </Card>
-            ))}
-          </BoxList>
+                  <BoxDescriptionContent>
+                    <TextDataContent>Descrição</TextDataContent>
+                    <TextDescriptionContent>
+                      {despesa.descricao}
+                    </TextDescriptionContent>
+                  </BoxDescriptionContent>
+                </Card>
+              ))}
+            </BoxList>
+          )}
         </Container>
       </ScrollView>
     </>
