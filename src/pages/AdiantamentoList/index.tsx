@@ -44,6 +44,7 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  tipoPagamento: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -258,6 +259,10 @@ export default function AdiantamentoList({
                     <TextDataContent>
                       <TextDataContentFoco>Colaborador:</TextDataContentFoco>{' '}
                       {adiantamento.nomeColaborador}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {adiantamento.tipoPagamento}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}

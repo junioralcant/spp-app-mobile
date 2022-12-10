@@ -2,8 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, Modal, ScrollView} from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
+import RNPickerSelect from 'react-native-picker-select';
+import moment from 'moment';
+import {ImagePickerResponse} from 'react-native-image-picker/src';
+import {RouteProp} from '@react-navigation/native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 import api from '../../services/api';
+
+import HeaderName from '../../components/HeaderName';
+import inputValueMask from '../../components/inputValueMask';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 import {
   BoxButtonsSelectPhoto,
@@ -21,15 +32,6 @@ import {
   Preview,
   TextButton,
 } from './styles';
-import {ImagePickerResponse} from 'react-native-image-picker/src';
-import HeaderName from '../../components/HeaderName';
-import inputValueMask from '../../components/inputValueMask';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RouteProp} from '@react-navigation/native';
-import ImageViewer from 'react-native-image-zoom-viewer';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
-import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -42,6 +44,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
   const [descricao, setDescricao] = useState('');
   const [uri, setUri] = useState('');
   const [dataNota, setDataNota] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
@@ -88,8 +91,14 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse || !dataNota) {
-      setError('Tire uma foto para continuar ou informe uma data');
+    if (!pickerResponse || !dataNota || !tipoPagamento) {
+      setError(
+        `${!pickerResponse ? 'Tire uma foto, ' : ' '}${
+          !dataNota ? 'Informe uma data, ' : ' '
+        }${
+          !tipoPagamento ? 'Selecione o tipo de pagamento, ' : ' '
+        }para continuar!`,
+      );
     } else {
       try {
         setError('');
@@ -106,6 +115,8 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         });
 
         data.append('nomeColaborador', nome);
+        data.append('tipoPagamento', tipoPagamento);
+
         data.append(
           'dataNota',
           moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -122,6 +133,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
         Alert.alert('Registro cadastrado');
         setNome('');
+        setTipoPagamento('');
         setNomeLinha('');
         setDescricao('');
         setValor('');
@@ -139,6 +151,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setNome(response.data.nomeColaborador);
+      setTipoPagamento(response.data.tipoPagamento);
       setDataNota(
         moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
       );
@@ -184,6 +197,7 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
         });
 
       nome && data.append('nomeColaborador', nome);
+      tipoPagamento && data.append('tipoPagamento', tipoPagamento);
       dataNota &&
         data.append(
           'dataNota',
@@ -270,6 +284,19 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
