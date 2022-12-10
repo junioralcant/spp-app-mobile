@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
-
 import Icons from 'react-native-vector-icons/AntDesign';
-
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
+import api from '../../services/api';
 import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
@@ -34,10 +35,6 @@ import {
   TextDescriptionContent,
 } from './styles';
 
-import api from '../../services/api';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-
 interface IAdiantamentoType {
   _id: string;
   nomeLinha: string;
@@ -47,6 +44,7 @@ interface IAdiantamentoType {
     url: string;
   };
   descricao: string;
+  tipoPagamento: string;
   total: number;
   createdAt: Date;
 }
@@ -254,6 +252,10 @@ export default function DespesasExtrasList({
                     <TextDataContent>
                       <TextDataContentFoco>Quantidade:</TextDataContentFoco>{' '}
                       {adiantamento.quantidade}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {adiantamento.tipoPagamento}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
