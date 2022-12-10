@@ -45,6 +45,7 @@ interface IhospegemType {
   veiculo: string;
   quantidade: string;
   nomePeca: string;
+  tipoPagamento: string;
   imagem: {
     url: string;
   };
@@ -262,6 +263,7 @@ export default function PecasList({navigation, route}: iNavigationProps) {
                       <TextDataContentFoco>Peça:</TextDataContentFoco>{' '}
                       {peca.nomePeca}
                     </TextDataContent>
+
                     <TextDataContent>
                       <TextDataContentFoco>Valor Unitário:</TextDataContentFoco>{' '}
                       {peca.valorUnitario &&
@@ -281,6 +283,10 @@ export default function PecasList({navigation, route}: iNavigationProps) {
                           style: 'currency',
                           currency: 'BRL',
                         })}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {peca.tipoPagamento}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
