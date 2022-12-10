@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
+import RNPickerSelect from 'react-native-picker-select';
 
 import api from '../../services/api';
 
@@ -49,6 +50,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   const [uri, setUri] = useState('');
   const [valorUnitario, setValorUnitario] = useState('');
   const [dataNota, setDataNota] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
@@ -95,8 +97,14 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse || !dataNota) {
-      setError('Tire uma foto para continuar ou informe uma data');
+    if (!pickerResponse || !dataNota || !tipoPagamento) {
+      setError(
+        `${!pickerResponse ? 'Tire uma foto, ' : ' '}${
+          !dataNota ? 'Informe uma data, ' : ' '
+        }${
+          !tipoPagamento ? 'Selecione o tipo de pagamento, ' : ' '
+        }para continuar!`,
+      );
     } else {
       try {
         setError('');
@@ -113,6 +121,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         });
 
         data.append('nomeHotel', nomeHotel);
+        data.append('tipoPagamento', tipoPagamento);
         data.append(
           'dataNota',
           moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -134,6 +143,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
         Alert.alert('Registro cadastrado');
         setNomeHotel('');
+        setTipoPagamento('');
         setDiarias('');
         setNomeLinha('');
         setValorUnitario('');
@@ -153,6 +163,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setNomeHotel(response.data.nomeHotel);
+      setTipoPagamento(response.data.tipoPagamento);
       setDataNota(
         moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
       );
@@ -212,6 +223,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         });
 
       nomeHotel && data.append('nomeHotel', nomeHotel);
+      tipoPagamento && data.append('tipoPagamento', tipoPagamento);
       data.append(
         'dataNota',
         moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -318,6 +330,19 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 

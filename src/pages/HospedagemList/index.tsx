@@ -47,6 +47,7 @@ interface IhospegemType {
     url: string;
   };
   diarias: string;
+  tipoPagamento: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -268,6 +269,10 @@ export default function HospedagemList({navigation, route}: iNavigationProps) {
                           style: 'currency',
                           currency: 'BRL',
                         })}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {hospegem.tipoPagamento}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
