@@ -45,6 +45,7 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  tipoPagamento: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -246,6 +247,10 @@ export default function AlimentacaoList({navigation, route}: iNavigationProps) {
                     <TextDataContent>
                       <TextDataContentFoco>Quantidade:</TextDataContentFoco>{' '}
                       {adiantamento.quantidade}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {adiantamento.tipoPagamento}
                     </TextDataContent>
                     <TextDataContent>
                       <TextDataContentFoco>Total:</TextDataContentFoco>{' '}

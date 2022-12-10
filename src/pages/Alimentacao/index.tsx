@@ -2,8 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, Modal, ScrollView} from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
+import RNPickerSelect from 'react-native-picker-select';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import moment from 'moment';
+import {ImagePickerResponse} from 'react-native-image-picker/src';
 
 import api from '../../services/api';
+
+import HeaderName from '../../components/HeaderName';
+import inputValueMask from '../../components/inputValueMask';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 import {
   BoxButtonsSelectPhoto,
@@ -22,16 +33,6 @@ import {
   TextButton,
 } from './styles';
 
-import {ImagePickerResponse} from 'react-native-image-picker/src';
-import HeaderName from '../../components/HeaderName';
-import inputValueMask from '../../components/inputValueMask';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RouteProp} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import ImageViewer from 'react-native-image-zoom-viewer';
-import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
-import moment from 'moment';
-
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
   route: RouteProp<{params: {params: {registerId: string}}}, 'params'>;
@@ -45,6 +46,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
   const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
   const [uri, setUri] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -88,8 +90,14 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse || !dataNota) {
-      setError('Tire uma foto para continuar ou informe uma data');
+    if (!pickerResponse || !dataNota || !tipoPagamento) {
+      setError(
+        `${!pickerResponse ? 'Tire uma foto, ' : ' '}${
+          !dataNota ? 'Informe uma data, ' : ' '
+        }${
+          !tipoPagamento ? 'Selecione o tipo de pagamento, ' : ' '
+        }para continuar!`,
+      );
     } else {
       try {
         setError('');
@@ -105,6 +113,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
         });
 
         data.append('quantidade', quantidade);
+        data.append('tipoPagamento', tipoPagamento);
         data.append(
           'dataNota',
           moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -121,6 +130,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
         Alert.alert('Registro cadastrado');
         setQuantidade('');
+        setTipoPagamento('');
         setNomeLinha('');
         setValor('');
         setDescricao('');
@@ -138,6 +148,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setQuantidade(String(response.data.quantidade));
+      setTipoPagamento(response.data.tipoPagamento);
       setDataNota(
         moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
       );
@@ -185,6 +196,7 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
       if (quantidade && quantidade !== 'undefined' && quantidade !== 'null') {
         data.append('quantidade', quantidade);
       }
+      tipoPagamento && data.append('tipoPagamento', tipoPagamento);
       dataNota &&
         data.append(
           'dataNota',
@@ -267,6 +279,19 @@ export default function Alimentacao({navigation, route}: INavigationProps) {
               onChangeText={setDescricao}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
