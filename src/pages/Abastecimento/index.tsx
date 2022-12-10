@@ -8,8 +8,18 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker/src';
 import Icons from 'react-native-vector-icons/AntDesign';
+import RNPickerSelect from 'react-native-picker-select';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RouteProp} from '@react-navigation/native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import moment from 'moment';
+import {ImagePickerResponse} from 'react-native-image-picker/src';
 
 import api from '../../services/api';
+
+import HeaderName from '../../components/HeaderName';
+import inputValueMask from '../../components/inputValueMask';
+import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
 
 import {
   BoxButtonsSelectPhoto,
@@ -27,14 +37,6 @@ import {
   Preview,
   TextButton,
 } from './styles';
-import {ImagePickerResponse} from 'react-native-image-picker/src';
-import HeaderName from '../../components/HeaderName';
-import inputValueMask from '../../components/inputValueMask';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RouteProp} from '@react-navigation/native';
-import ImageViewer from 'react-native-image-zoom-viewer';
-import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
-import moment from 'moment';
 
 interface INavigationProps {
   navigation: StackNavigationProp<any, any>;
@@ -48,6 +50,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
   const [veiculo, setVeiculo] = useState('');
   const [valorUnitario, setValorUnitario] = useState('');
   const [dataNota, setDataNota] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [uri, setUri] = useState('');
 
@@ -92,8 +95,14 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
   }
 
   async function register() {
-    if (!pickerResponse || !dataNota) {
-      setError('Tire uma foto para continuar ou informe uma data');
+    if (!pickerResponse || !dataNota || !tipoPagamento) {
+      setError(
+        `${!pickerResponse ? 'Tire uma foto, ' : ' '}${
+          !dataNota ? 'Informe uma data, ' : ' '
+        }${
+          !tipoPagamento ? 'Selecione o tipo de pagamento, ' : ' '
+        }para continuar!`,
+      );
     } else {
       try {
         setError('');
@@ -110,6 +119,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
         });
 
         data.append('litros', litros);
+        data.append('tipoPagamento', tipoPagamento);
         data.append(
           'dataNota',
           moment(dataNota, 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -133,6 +143,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
 
         Alert.alert('Registro cadastrado');
         setLitros('');
+        setTipoPagamento('');
         setNomeLinha('');
         setDescricao('');
         setValor('');
@@ -152,6 +163,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
 
       // setRegisterRecovered(response.data);
       setLitros(String(response.data.litros));
+      setTipoPagamento(response.data.tipoPagamento);
       setDataNota(
         moment(response.data.createdAt, 'YYYY-MM-DD ').format('DD-MM-YYYY'),
       );
@@ -213,7 +225,7 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
       if (litros && litros !== 'undefined' && litros !== 'null') {
         data.append('litros', litros);
       }
-
+      tipoPagamento && data.append('tipoPagamento', tipoPagamento);
       valorUnitario &&
         data.append(
           'valorUnitario',
@@ -324,6 +336,19 @@ export default function Abastecimento({navigation, route}: INavigationProps) {
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 

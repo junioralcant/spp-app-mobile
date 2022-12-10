@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
-
 import Icons from 'react-native-vector-icons/AntDesign';
-
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
+import api from '../../services/api';
 
 import {
   BoxCardContent,
@@ -33,9 +34,6 @@ import {
   TextDataContentFoco,
   TextDescriptionContent,
 } from './styles';
-import api from '../../services/api';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface IAdiantamentoType {
   _id: string;
@@ -46,6 +44,7 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  tipoPagamento: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -273,6 +272,10 @@ export default function AdiantamentoList({
                           style: 'currency',
                           currency: 'BRL',
                         })}
+                    </TextDataContent>
+                    <TextDataContent>
+                      <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                      {adiantamento.tipoPagamento}
                     </TextDataContent>
 
                     <TextDataContent>
