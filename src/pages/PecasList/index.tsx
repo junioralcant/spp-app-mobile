@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
-
 import Icons from 'react-native-vector-icons/AntDesign';
-
+import RNPickerSelect from 'react-native-picker-select';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import HeaderList from '../../components/HeaderList';
@@ -69,6 +68,7 @@ export default function PecasList({navigation, route}: iNavigationProps) {
 
   const [nomeLinha, setNomeLinha] = useState('');
   const [nomeVeiculo, setNomeVeiculo] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -86,13 +86,20 @@ export default function PecasList({navigation, route}: iNavigationProps) {
   useEffect(() => {
     async function loadhospegem() {
       const response = await api.get(
-        `/peca?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&veiculo=${nomeVeiculo}`,
+        `/peca?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&veiculo=${nomeVeiculo}&tipoPagamento=${tipoPagamento}`,
       );
       setHospedagens(response.data);
     }
 
     loadhospegem();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, nomeVeiculo]);
+  }, [
+    dataFimChecks,
+    dataInicioChecks,
+    nomeLinha,
+    route,
+    nomeVeiculo,
+    tipoPagamento,
+  ]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -193,6 +200,19 @@ export default function PecasList({navigation, route}: iNavigationProps) {
               onChangeText={setNomeVeiculo}
               value={nomeVeiculo}
               placeholder="Buscar por nome do veiculo"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
