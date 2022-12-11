@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Modal, ActivityIndicator} from 'react-native';
 import moment from 'moment';
-
+import RNPickerSelect from 'react-native-picker-select';
 import Icons from 'react-native-vector-icons/AntDesign';
-
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
@@ -42,6 +41,7 @@ interface IAdiantamentoType {
   imagem: {
     url: string;
   };
+  tipoPagamento: string;
   descricao: string;
   total: number;
   createdAt: Date;
@@ -68,6 +68,7 @@ export default function TodasDespesasList({
   const [dataFimChecks, setDataFimChecks] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -89,14 +90,14 @@ export default function TodasDespesasList({
     async function loadAdiantamento() {
       setLoading(true);
       const response = await api.get(
-        `/todasdespesas?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
+        `/todasdespesas?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&tipoPagamento=${tipoPagamento}`,
       );
       setTodasDespesas(response.data);
       setLoading(false);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, tipoPagamento]);
 
   useEffect(() => {
     async function loadTotal() {
@@ -187,6 +188,19 @@ export default function TodasDespesasList({
             />
           </BoxInput>
 
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
+            />
+          </BoxInput>
+
           <BoxInputsDate>
             <BoxInpuDate>
               <InputDate
@@ -246,6 +260,11 @@ export default function TodasDespesasList({
                       <TextDataContent>
                         <TextDataContentFoco>Gasto com:</TextDataContentFoco>{' '}
                         {despesa.title}
+                      </TextDataContent>
+
+                      <TextDataContent>
+                        <TextDataContentFoco>Pagamento:</TextDataContentFoco>{' '}
+                        {despesa.tipoPagamento}
                       </TextDataContent>
 
                       <TextDataContent>
