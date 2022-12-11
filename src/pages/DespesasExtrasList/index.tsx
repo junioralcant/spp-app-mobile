@@ -5,6 +5,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import RNPickerSelect from 'react-native-picker-select';
 
 import api from '../../services/api';
 import HeaderList from '../../components/HeaderList';
@@ -63,6 +64,7 @@ export default function DespesasExtrasList({
 
   const [dataInicioChecks, setDataInicioChecks] = useState('');
   const [dataFimChecks, setDataFimChecks] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
 
@@ -82,13 +84,13 @@ export default function DespesasExtrasList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/despesa-extra?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
+        `/despesa-extra?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&tipoPagamento=${tipoPagamento}`,
       );
       setDespesas(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, tipoPagamento]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -181,6 +183,19 @@ export default function DespesasExtrasList({
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
