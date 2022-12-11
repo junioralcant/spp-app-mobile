@@ -5,6 +5,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import RNPickerSelect from 'react-native-picker-select';
 
 import HeaderList from '../../components/HeaderList';
 import inputDataNascimentoMask from '../../components/inputDataNascimentoMask';
@@ -67,6 +68,7 @@ export default function AdiantamentoList({
 
   const [nomeLinha, setNomeLinha] = useState('');
   const [veiculo, setVeiculo] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -84,13 +86,20 @@ export default function AdiantamentoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/abastecimento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&veiculo=${veiculo}`,
+        `/abastecimento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&veiculo=${veiculo}&tipoPagamento=${tipoPagamento}`,
       );
       setAdiantamentos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, veiculo, route]);
+  }, [
+    dataFimChecks,
+    dataInicioChecks,
+    nomeLinha,
+    veiculo,
+    route,
+    tipoPagamento,
+  ]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -192,6 +201,19 @@ export default function AdiantamentoList({
               onChangeText={setVeiculo}
               value={veiculo}
               placeholder="Buscar por veiculo"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
