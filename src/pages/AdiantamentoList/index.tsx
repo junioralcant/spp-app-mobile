@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
-
+import RNPickerSelect from 'react-native-picker-select';
 import Icons from 'react-native-vector-icons/AntDesign';
-
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import HeaderList from '../../components/HeaderList';
@@ -67,6 +66,7 @@ export default function AdiantamentoList({
 
   const [nomeLinha, setNomeLinha] = useState('');
   const [colaborador, setColaborador] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [search, setSearch] = useState(false);
 
@@ -84,13 +84,20 @@ export default function AdiantamentoList({
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}`,
+        `/adiantamento?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&colaborador=${colaborador}&tipoPagamento=${tipoPagamento}`,
       );
       setAdiantamentos(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, colaborador, route]);
+  }, [
+    dataFimChecks,
+    dataInicioChecks,
+    nomeLinha,
+    colaborador,
+    route,
+    tipoPagamento,
+  ]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -192,6 +199,19 @@ export default function AdiantamentoList({
               onChangeText={setColaborador}
               value={colaborador}
               placeholder="Buscar por colaborador"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
