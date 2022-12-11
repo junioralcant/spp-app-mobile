@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Alert, Modal} from 'react-native';
 import moment from 'moment';
-
+import RNPickerSelect from 'react-native-picker-select';
 import Icons from 'react-native-vector-icons/AntDesign';
-
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import HeaderList from '../../components/HeaderList';
@@ -62,6 +61,7 @@ export default function AlimentacaoList({navigation, route}: iNavigationProps) {
 
   const [dataInicioChecks, setDataInicioChecks] = useState('');
   const [dataFimChecks, setDataFimChecks] = useState('');
+  const [tipoPagamento, setTipoPagamento] = useState('');
 
   const [nomeLinha, setNomeLinha] = useState('');
 
@@ -81,13 +81,13 @@ export default function AlimentacaoList({navigation, route}: iNavigationProps) {
   useEffect(() => {
     async function loadAdiantamento() {
       const response = await api.get(
-        `/alimentacoes?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}`,
+        `/alimentacoes?dataIncio=${dataInicioChecks}&dataFim=${dataFimChecks}&nomeLinha=${nomeLinha}&tipoPagamento=${tipoPagamento}`,
       );
       setAlimentacoes(response.data);
     }
 
     loadAdiantamento();
-  }, [dataFimChecks, dataInicioChecks, nomeLinha, route]);
+  }, [dataFimChecks, dataInicioChecks, nomeLinha, route, tipoPagamento]);
 
   function checksDates() {
     if (dataIncio.length !== 10 || dataFim.length !== 10) {
@@ -180,6 +180,19 @@ export default function AlimentacaoList({navigation, route}: iNavigationProps) {
               onChangeText={setNomeLinha}
               value={nomeLinha}
               placeholder="Buscar por nome da linha"
+            />
+          </BoxInput>
+
+          <BoxInput>
+            <RNPickerSelect
+              onValueChange={value => setTipoPagamento(value)}
+              placeholder={{label: 'Selecione o tipo de pagamento', value: ''}}
+              value={tipoPagamento}
+              items={[
+                {label: 'A vista', value: 'A vista'},
+                {label: 'A prazo', value: 'A prazo'},
+                {label: 'Cartão de crédito', value: 'Cartao de credito'},
+              ]}
             />
           </BoxInput>
 
