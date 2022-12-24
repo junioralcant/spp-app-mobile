@@ -27,6 +27,7 @@ import {
   Loading,
   Preview,
   TextButton,
+  TotalText,
 } from './styles';
 import {ImagePickerResponse} from 'react-native-image-picker/src';
 import HeaderName from '../../components/HeaderName';
@@ -52,7 +53,6 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   const [dataNota, setDataNota] = useState('');
   const [tipoPagamento, setTipoPagamento] = useState('');
 
-  const [valor, setValor] = useState('');
   const [buttonAnexar, setButtonAnexar] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -135,7 +135,7 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         data.append('descricao', descricao);
         data.append(
           'total',
-          valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
+          totalValue().replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
 
         await api.post('/hospedagem', data);
@@ -148,7 +148,6 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         setNomeLinha('');
         setValorUnitario('');
         setDescricao('');
-        setValor('');
         setPickerResponse(null);
         setDataNota('');
       } catch (error) {
@@ -185,15 +184,6 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
         }
       }
 
-      if (response.data.total) {
-        setValor(inputValueMask(String(response.data.total) + '00'));
-        if (String(response.data.total).split('.')[1].length === 2) {
-          setValor(inputValueMask(String(response.data.total)));
-        }
-        if (String(response.data.total).split('.')[1].length === 1) {
-          setValor(inputValueMask(String(response.data.total) + '0'));
-        }
-      }
       setUri(response.data.imagem.url);
       setButtonAnexar(true);
     }
@@ -235,11 +225,10 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
           'valorUnitario',
           valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.'),
         );
-      valor &&
-        data.append(
-          'total',
-          valor.replace('R$ ', '').replace('.', '').replace(',', '.'),
-        );
+      data.append(
+        'total',
+        totalValue().replace('R$ ', '').replace('.', '').replace(',', '.'),
+      );
 
       await api.put(`/hospedagem/${registerId}`, data);
       Alert.alert('Registro alterado!');
@@ -265,6 +254,30 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
   function showModal(uri: string) {
     setImageShow(uri);
     setModalVisible(true);
+  }
+
+  function totalValue() {
+    const valorUnitarioFormatted = valorUnitario
+      .replace('R$ ', '')
+      .replace('.', '')
+      .replace(',', '.');
+
+    let totalCalc = Number(valorUnitarioFormatted) * Number(diarias);
+
+    const separaTotalPorPonto = totalCalc.toString().split('.');
+
+    if (!separaTotalPorPonto[1]) {
+      return `${totalCalc},00`;
+    }
+
+    const totalDuasCasaAposPonto = totalCalc.toFixed(2);
+
+    // Substitute ponto por virgula
+    const totalFormateed = String(totalDuasCasaAposPonto)
+      .replace('.', ',')
+      .replace('.', ',');
+
+    return `R$ ${totalFormateed}`;
   }
 
   return (
@@ -318,19 +331,14 @@ export default function Hospedagem({navigation, route}: INavigationProps) {
 
           <BoxInput>
             <Input
-              onChangeText={e => setValor(inputValueMask(e))}
-              value={valor}
-              placeholder="Total"
-              keyboardType="numeric"
-            />
-          </BoxInput>
-
-          <BoxInput>
-            <Input
               onChangeText={e => setDescricao(e)}
               value={descricao}
               placeholder="Descrição"
             />
+          </BoxInput>
+
+          <BoxInput>
+            <TotalText>Total: {totalValue()}</TotalText>
           </BoxInput>
 
           <BoxInput>
