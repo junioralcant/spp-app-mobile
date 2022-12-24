@@ -119,3 +119,9 @@ export const InputDate = styled.TextInput`
   border: 1px #c4c4c4;
   width: 150px;
 `;
+
+export const TotalText = styled.Text`
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 18px;
+`;
