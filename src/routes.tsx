@@ -32,6 +32,7 @@ import TodasDespesasList from './pages/TodasDespesasList';
 
 import AlterarSaldo from './pages/AlterarSaldo';
 import AlterarSaldoList from './pages/AlterarSaldoList';
+import TransferenciaList from './pages/TransferenciaList';
 
 export default function Routes() {
   const Stack = createStackNavigator();
@@ -39,13 +40,13 @@ export default function Routes() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen
+        <Stack.Screen
           name="SignIn"
           component={SignIn}
           options={{
             headerShown: false,
           }}
-        /> */}
+        />
         <Stack.Screen
           name="Home"
           component={Home}
@@ -160,6 +161,14 @@ export default function Routes() {
         <Stack.Screen
           name="RocoList"
           component={RocoList}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="TransferenciaList"
+          component={TransferenciaList}
           options={{
             headerShown: false,
           }}
