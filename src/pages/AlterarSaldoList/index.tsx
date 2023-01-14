@@ -206,45 +206,57 @@ export default function AlterarSaldoList({
           </BoxInputsDate>
 
           <BoxList>
-            {saldos.map(saldo => (
-              <Card key={saldo._id}>
-                <HeaderCard>
-                  <ButtonHeaderDelete onPress={() => deleteGegister(saldo._id)}>
-                    <Icons name="delete" size={30} color="#FFF" />
-                  </ButtonHeaderDelete>
-                </HeaderCard>
+            {saldos.map(saldo => {
+              const description = saldo.descricao;
+              let descriptionSplit: string[] = [];
 
-                <BoxCardContent>
-                  <BoxDataContent>
-                    <TextDataContent>
-                      <TextDataContentFoco>Data:</TextDataContentFoco>{' '}
-                      {moment(saldo.createdAt).format('DD-MM-YYYY')}
-                    </TextDataContent>
+              if (description) {
+                descriptionSplit = description.split(' ');
+              }
 
-                    <TextDataContent>
-                      <TextDataContentFoco>Para:</TextDataContentFoco>{' '}
-                      {saldo.userCreate && saldo.userCreate.name}
-                    </TextDataContent>
+              return (
+                <Card key={saldo._id}>
+                  {descriptionSplit[0] !== 'TRANFERÊNCIA' && (
+                    <HeaderCard>
+                      <ButtonHeaderDelete
+                        onPress={() => deleteGegister(saldo._id)}>
+                        <Icons name="delete" size={30} color="#FFF" />
+                      </ButtonHeaderDelete>
+                    </HeaderCard>
+                  )}
 
-                    <TextDataContent>
-                      <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
-                      {saldo.total &&
-                        saldo.total.toLocaleString('pt-br', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
-                    </TextDataContent>
-                  </BoxDataContent>
-                </BoxCardContent>
+                  <BoxCardContent>
+                    <BoxDataContent>
+                      <TextDataContent>
+                        <TextDataContentFoco>Data:</TextDataContentFoco>{' '}
+                        {moment(saldo.createdAt).format('DD-MM-YYYY')}
+                      </TextDataContent>
 
-                <BoxDescriptionContent>
-                  <TextDataContent>Descrição</TextDataContent>
-                  <TextDescriptionContent>
-                    {saldo.descricao}
-                  </TextDescriptionContent>
-                </BoxDescriptionContent>
-              </Card>
-            ))}
+                      <TextDataContent>
+                        <TextDataContentFoco>Para:</TextDataContentFoco>{' '}
+                        {saldo.userCreate && saldo.userCreate.name}
+                      </TextDataContent>
+
+                      <TextDataContent>
+                        <TextDataContentFoco>Total:</TextDataContentFoco>{' '}
+                        {saldo.total &&
+                          saldo.total.toLocaleString('pt-br', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                      </TextDataContent>
+                    </BoxDataContent>
+                  </BoxCardContent>
+
+                  <BoxDescriptionContent>
+                    <TextDataContent>Descrição</TextDataContent>
+                    <TextDescriptionContent>
+                      {saldo.descricao}
+                    </TextDescriptionContent>
+                  </BoxDescriptionContent>
+                </Card>
+              );
+            })}
           </BoxList>
         </Container>
       </ScrollView>
