@@ -33,6 +33,7 @@ import TodasDespesasList from './pages/TodasDespesasList';
 import AlterarSaldo from './pages/AlterarSaldo';
 import AlterarSaldoList from './pages/AlterarSaldoList';
 import TransferenciaList from './pages/TransferenciaList';
+import Transferencia from './pages/Transferencia';
 
 export default function Routes() {
   const Stack = createStackNavigator();
@@ -164,6 +165,12 @@ export default function Routes() {
           options={{
             headerShown: false,
           }}
+        />
+
+        <Stack.Screen
+          name="Transferencia"
+          component={Transferencia}
+          options={{headerShown: false}}
         />
 
         <Stack.Screen
