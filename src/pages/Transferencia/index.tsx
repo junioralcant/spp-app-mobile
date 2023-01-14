@@ -34,7 +34,6 @@ export default function Transferencia() {
   const [idPara, setIdPara] = useState('');
   const [nomeLinha, setNomeLinha] = useState('');
   const [caixas, setCaixas] = useState<Caixa[]>([]);
-  const [userLogged, setUserLogged] = useState({});
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
