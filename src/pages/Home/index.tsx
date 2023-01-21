@@ -21,7 +21,7 @@ interface IItemType {
 export default function Home({navigation, route}: iNavigationProps) {
   const DATA = [
     {
-      title: 'Adiantamento',
+      title: 'Adiantamento/Pagamento',
       page: 'Adiantamento',
     },
     {

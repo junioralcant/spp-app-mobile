@@ -18,6 +18,7 @@ export const TextHeader = styled.Text`
   font-weight: bold;
   font-size: 20px;
   color: #fff;
+  text-align: center;
 `;
 
 export const ContentHeader = styled.View`

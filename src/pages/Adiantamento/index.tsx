@@ -247,7 +247,9 @@ export default function Adiantamento({navigation, route}: INavigationProps) {
       </Modal>
       <HeaderName
         namePage={
-          !registerId ? 'Cadastrar Adiantamento' : 'Alterar Adiantamento'
+          !registerId
+            ? `Cadastrar${'\n'}Adiantamento/Pagamento`
+            : `Alterar${'\n'}Adiantamento/Pagamento`
         }
       />
       <ScrollView

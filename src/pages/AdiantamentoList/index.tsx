@@ -178,7 +178,7 @@ export default function AdiantamentoList({
         <ImageViewer imageUrls={images} />
       </Modal>
       <HeaderList
-        namePage="Listagem Adiantamento"
+        namePage={`Listagem ${'\n'} Adiantamento/Pagamento`}
         total={total}
         register={adiantamentos.length}
       />
