@@ -49,6 +49,10 @@ export default function Home({navigation, route}: iNavigationProps) {
       page: 'Roco',
     },
     {
+      title: 'Serviço',
+      page: 'Servico',
+    },
+    {
       title: 'Transferência',
       page: 'Transferencia',
     },

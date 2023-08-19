@@ -34,6 +34,8 @@ import AlterarSaldo from './pages/AlterarSaldo';
 import AlterarSaldoList from './pages/AlterarSaldoList';
 import TransferenciaList from './pages/TransferenciaList';
 import Transferencia from './pages/Transferencia';
+import Servico from './pages/Servico';
+import ServicoList from './pages/ServicoList';
 
 export default function Routes() {
   const Stack = createStackNavigator();
@@ -51,6 +53,18 @@ export default function Routes() {
         <Stack.Screen
           name="Home"
           component={Home}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="Servico"
+          component={Servico}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name="ServicoList"
+          component={ServicoList}
           options={{headerShown: false}}
         />
 
